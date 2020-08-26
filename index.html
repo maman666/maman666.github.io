@@ -1,12 +1,46 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=X-UA-Compatible content="IE=edge"><title>cagentcheck</title><style>#app{
-      width:958px !important;
-    }
-    #app>div {
-      width: 958px !important;
-      margin: 0 auto;
-    }</style><link href=https://wx.gtimg.com/mmpayweb/CAgentCheck/css/app.21806dc7d6d55d2bad136db311293154.css rel=stylesheet></head><body><div id=app style="width: 958px;"></div><script>var WXPAY_JSLOG_REPORT_CONF = {
-      name: "mmpayweb_MerchantViolation_fe",
-      hostname: "pay.weixin.qq.com",
-      reportCgi: true,
-      exportKeyType: ""
-    };</script><script type=text/javascript src=https://wx.gtimg.com/mmpayweb/CAgentCheck/js/manifest.a0253b2e3b7541ed74be.js></script><script type=text/javascript src=https://wx.gtimg.com/mmpayweb/CAgentCheck/js/vendor.23ab042b39d3ec663c3f.js></script><script type=text/javascript src=https://wx.gtimg.com/mmpayweb/CAgentCheck/js/app.901b948a198c87a2e8ad.js></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mamanboke</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+</head>
+
+<body>
+    <div id="app">
+        <p @click="handleclick">{{msg}}</p>
+        <el-row>
+            <el-button>默认按钮</el-button>
+            <el-button type="primary">主要按钮</el-button>
+            <el-button type="success">成功按钮</el-button>
+            <el-button type="info">信息按钮</el-button>
+            <el-button type="warning">警告按钮</el-button>
+            <el-button type="danger">危险按钮</el-button>
+          </el-row>
+    </div>
+</body>
+    <!-- 引入组件库 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script>
+        new Vue({
+            el:'#app',
+            
+            data:{
+                msg:'666'
+            },
+            methods:{
+                handleclick(){
+                    console.log(this)
+                    this.$message.success('success')
+                }
+            }
+        })
+    </script>
+
+</html>
