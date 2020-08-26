@@ -6,41 +6,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mamanboke</title>
     <!-- 引入样式 -->
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .el-carousel__item h3 {
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 200px;
+            margin: 0;
+        }
 
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
-        <p @click="handleclick">{{msg}}</p>
-        <el-row>
-            <el-button>默认按钮</el-button>
-            <el-button type="primary">主要按钮</el-button>
-            <el-button type="success">成功按钮</el-button>
-            <el-button type="info">信息按钮</el-button>
-            <el-button type="warning">警告按钮</el-button>
-            <el-button type="danger">危险按钮</el-button>
-          </el-row>
+        <div id="maman">
+            <div class="border">
+                <header class="header">
+                    <div class="logo">
+                        <a href="./index.html">
+                            <span></span>
+                            <span>Mr.Xie</span>
+                            <span></span>
+                        </a>
+                    </div>
+                    <ul class="navTab" v-for="(item,index) in navTabList">
+                        <li :class="{active:navIndex==index}" @click="handleTab(index)"><i
+                                :class="item.icon"></i>{{item.title}}</li>
+                        <!-- <li><i class="el-icon-picture-outline"></i>相片</li> -->
+                    </ul>
+                </header>
+            </div>
+            <main id="main">
+                <div class="banner">
+                    <el-carousel :interval="4000" type="card" height="250px">
+                        <el-carousel-item v-for="item in photoUrl" :key="item.id">
+                            <img :src="item.imgUrl">
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+            </main>
+        </div>
     </div>
 </body>
-    <!-- 引入组件库 -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<!-- 引入组件库 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
-    <script>
-        new Vue({
-            el:'#app',
-            
-            data:{
-                msg:'666'
-            },
-            methods:{
-                handleclick(){
-                    console.log(this)
-                    this.$message.success('success')
+<script>
+    //导航信息
+    let navTabList = [{
+        icon: 'el-icon-s-home',
+        title: '首页'
+    }, {
+        icon: 'el-icon-picture-outline',
+        title: '相片',
+    }]
+    //图片
+    let photoUrl = [{
+        id:0,
+        imgUrl:"./img/1.jpg",
+        imgTitle:'图片1'
+    },{
+        id:1,
+        imgUrl:"./img/2.jpg",
+        imgTitle:'图片2'
+    },{
+        id:2,
+        imgUrl:"./img/3.jpg",
+        imgTitle:'图片3'
+    }]
+    new Vue({
+        el: '#app',
+
+        data: {
+            navTabList,
+            photoUrl,
+            navIndex: 0
+        },
+        methods: {
+            handleTab(index) {
+                this.navIndex = index;
+                switch (index) {
+                    case 0:
+                        window.location.reload();
+                        break;
+                    case 1:
+                        window.location.href = "./page/photo.html"
                 }
             }
-        })
-    </script>
+        }
+    })
+</script>
 
 </html>

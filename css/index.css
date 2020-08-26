@@ -1,0 +1,88 @@
+#maman{
+   
+}
+
+/* 头部 */
+
+.border{
+    width: 100%;
+    border-bottom: 1px solid #e6e6e6;
+    height: 60px;
+}
+.header{
+    width: 1280px;
+    position: fixed;
+    top: 0;
+    left: 20%;
+    z-index: 99999;
+    background-color: #fff;
+    box-sizing: border-box;
+ }
+
+.header .logo{
+    padding-right: 23%;
+    float: left;
+}
+.header .logo a{
+    position: relative;
+    display: inline-block;
+    color: #222;
+    border-bottom: none;
+    background: none;
+    padding: 2px 2px 1px 20px;
+    margin: 8px auto;
+}
+
+.header .logo a span:nth-child(1),.header .logo a span:nth-child(3){
+    display: block;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 50px;
+    height: 2px;
+    background-color: #222;
+}
+.header .logo a span:nth-child(2){
+    display: inline-block;
+    vertical-align: top;
+    line-height: 36px;
+    position: relative;
+    font-size: 22px;
+    font-weight: bolder;
+}
+.header .navTab{
+    float: left;
+}
+
+.header .navTab li{
+    float: left;
+    font-size: 14px;
+    color: #303133;
+    padding: 0 20px;
+    cursor: pointer;
+    height: 60px;
+    line-height: 60px;
+    font-size:18px;
+}
+.header .navTab li i{
+    padding-right: 3px;
+}
+
+.header .navTab li:hover{
+    background-color: #ecf5ff;
+}
+
+.header .navTab .active{
+    color: #409eff;
+}
+
+/* 主体部分 */
+#main{
+    clear: both;
+    /* margin-top: 60px; */
+}
+
+#main .banner{
+    width: 1280px;
+    margin: 0 auto;
+}
+
