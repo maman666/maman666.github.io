@@ -71,6 +71,9 @@
     }, {
         icon: 'el-icon-picture-outline',
         title: '相片',
+    },{
+        icon:'el-icon-orange',
+        title:'抽奖'
     }]
     //图片
     let photoUrl = [{
@@ -102,7 +105,10 @@
                         window.location.reload();
                         break;
                     case 1:
-                        window.location.href = "./page/photo.html"
+                        window.location.href = "./page/photo/photo.html";
+                        break;
+                    case 2:
+                        window.location.href = './page/vueLuckDraw/index.html';
                 }
             }
         }
