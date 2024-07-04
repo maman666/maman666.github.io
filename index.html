@@ -1,118 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>mamanboke</title>
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="./css/index.css">
-    <link rel="stylesheet" href="./css/reset.css">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
     <style>
-        .el-carousel__item h3 {
-            color: #475669;
-            font-size: 14px;
-            opacity: 0.75;
-            line-height: 200px;
-            margin: 0;
-        }
+      .el-carousel__item h3 {
+        color: #475669;
+        font-size: 14px;
+        opacity: 0.75;
+        line-height: 200px;
+        margin: 0;
+      }
 
-        .el-carousel__item:nth-child(2n) {
-            background-color: #99a9bf;
-        }
+      .el-carousel__item:nth-child(2n) {
+        background-color: #99a9bf;
+      }
 
-        .el-carousel__item:nth-child(2n+1) {
-            background-color: #d3dce6;
-        }
+      .el-carousel__item:nth-child(2n + 1) {
+        background-color: #d3dce6;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="app">
-        <div id="maman">
-            <div class="border">
-                <header class="header">
-                    <div class="logo">
-                        <a href="./index.html">
-                            <span></span>
-                            <span>Mr.Xie</span>
-                            <span></span>
-                        </a>
-                    </div>
-                    <ul class="navTab" v-for="(item,index) in navTabList">
-                        <li :class="{active:navIndex==index}" @click="handleTab(index)"><i
-                                :class="item.icon"></i>{{item.title}}</li>
-                        <!-- <li><i class="el-icon-picture-outline"></i>相片</li> -->
-                    </ul>
-                </header>
+      <div id="maman">
+        <div class="border">
+          <header class="header">
+            <div class="logo">
+              <a href="./index.html">
+                <span></span>
+                <span>Mr.Xie</span>
+                <span></span>
+              </a>
             </div>
-            <main id="main">
-                <div class="banner">
-                    <el-carousel :interval="4000" type="card" height="250px">
-                        <el-carousel-item v-for="item in photoUrl" :key="item.id">
-                            <img :src="item.imgUrl">
-                        </el-carousel-item>
-                    </el-carousel>
-                </div>
-            </main>
+            <ul class="navTab" v-for="(item,index) in navTabList">
+              <li :class="{active:navIndex==index}" @click="handleTab(index)">
+                <i :class="item.icon"></i>{{item.title}}
+              </li>
+              <!-- <li><i class="el-icon-picture-outline"></i>相片</li> -->
+            </ul>
+          </header>
         </div>
+        <main id="main">
+          <div class="banner">
+            <el-carousel :interval="4000" type="card" height="250px">
+              <el-carousel-item v-for="item in photoUrl" :key="item.id">
+                <img :src="item.imgUrl" />
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+        </main>
+      </div>
     </div>
-</body>
-<!-- 引入组件库 -->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  </body>
+  <!-- 引入组件库 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
-<script>
+  <script>
     //导航信息
-    let navTabList = [{
-        icon: 'el-icon-s-home',
-        title: '首页'
-    }, {
-        icon: 'el-icon-picture-outline',
-        title: '相片',
-    },{
-        icon:'el-icon-orange',
-        title:'抽奖'
-    }]
+    let navTabList = [
+      {
+        icon: "el-icon-s-home",
+        title: "首页",
+      },
+      {
+        icon: "el-icon-picture-outline",
+        title: "相片",
+      },
+      {
+        icon: "el-icon-orange",
+        title: "抽奖",
+      },
+    ];
     //图片
-    let photoUrl = [{
-        id:0,
-        imgUrl:"./img/1.jpg",
-        imgTitle:'图片1'
-    },{
-        id:1,
-        imgUrl:"./img/2.jpg",
-        imgTitle:'图片2'
-    },{
-        id:2,
-        imgUrl:"./img/3.jpg",
-        imgTitle:'图片3'
-    }]
+    let photoUrl = [
+      {
+        id: 0,
+        imgUrl: "./img/1.jpg",
+        imgTitle: "图片1",
+      },
+      {
+        id: 1,
+        imgUrl: "./img/2.jpg",
+        imgTitle: "图片2",
+      },
+      {
+        id: 2,
+        imgUrl: "./img/3.jpg",
+        imgTitle: "图片3",
+      },
+    ];
     new Vue({
-        el: '#app',
+      el: "#app",
 
-        data: {
-            navTabList,
-            photoUrl,
-            navIndex: 0
+      data: {
+        navTabList,
+        photoUrl,
+        navIndex: 0,
+      },
+      methods: {
+        handleTab(index) {
+          this.navIndex = index;
+          switch (index) {
+            case 0:
+              window.location.reload();
+              break;
+            case 1:
+              window.location.href = "./page/photo/photo.html";
+              break;
+            case 2:
+              window.location.href = "./page/vueLuckDraw/index.html";
+          }
         },
-        methods: {
-            handleTab(index) {
-                this.navIndex = index;
-                switch (index) {
-                    case 0:
-                        window.location.reload();
-                        break;
-                    case 1:
-                        window.location.href = "./page/photo/photo.html";
-                        break;
-                    case 2:
-                        window.location.href = './page/vueLuckDraw/index.html';
-                }
-            }
-        }
-    })
-</script>
-
+      },
+    });
+  </script>
 </html>
