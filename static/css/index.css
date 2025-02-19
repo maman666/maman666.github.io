@@ -1,92 +1,274 @@
-#maman{
-   
+:root {
+  --main-color: #ff69b4;
+  --bg-color: #fff0f6;
 }
 
-ul,li{
-    list-style: none;
+body {
+  font-family: 'Comic Sans MS', cursive;
+  background: var(--bg-color);
+  margin: 0;
+  overflow-x: hidden;
 }
 
-/* 头部 */
-
-.border{
-    width: 100%;
-    border-bottom: 1px solid #e6e6e6;
-    height: 60px;
-}
-.header{
-    width: 1280px;
-    position: fixed;
-    top: 0;
-    left: 20%;
-    z-index: 99999;
-    background-color: #fff;
-    box-sizing: border-box;
- }
-
-.header .logo{
-    padding-right: 23%;
-    float: left;
-}
-.header .logo a{
-    position: relative;
-    display: inline-block;
-    color: #222;
-    border-bottom: none;
-    background: none;
-    padding: 2px 2px 1px 20px;
-    margin: 8px auto;
+.header {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(45deg, #ff9ec8, #ffd3e0);
+  position: relative;
 }
 
-.header .logo a span:nth-child(1),.header .logo a span:nth-child(3){
-    display: block;
-    overflow: hidden;
-    margin: 0 auto;
-    width: 50px;
-    height: 2px;
-    background-color: #222;
-}
-.header .logo a span:nth-child(2){
-    display: inline-block;
-    vertical-align: top;
-    line-height: 36px;
-    position: relative;
-    font-size: 22px;
-    font-weight: bolder;
-}
-.header .navTab{
-    float: left;
+.title {
+  color: var(--main-color);
+  font-size: 3rem;
+  text-shadow: 2px 2px #fff;
+  animation: bounce 2s infinite;
 }
 
-.header .navTab li{
-    float: left;
-    font-size: 14px;
-    color: #303133;
-    padding: 0 20px;
-    cursor: pointer;
-    height: 60px;
-    line-height: 60px;
-    font-size:18px;
-}
-.header .navTab li i{
-    padding-right: 3px;
+.heart-rain {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
-.header .navTab li:hover{
-    background-color: #ecf5ff;
+.heart {
+  position: absolute;
+  color: #ff4081;
+  animation: fall 3s linear infinite;
 }
 
-.header .navTab .active{
-    color: #409eff;
+.content {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
 }
 
-/* 主体部分 */
-#main{
-    clear: both;
-    /* margin-top: 60px; */
+.photo-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
 }
 
-#main .banner{
-    width: 1280px;
-    margin: 0 auto;
+.photo {
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s;
+  cursor: pointer;
+  width: 200px;
+  height: auto;
 }
 
+.photo:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+.bubble {
+  background: white;
+  border-radius: 20px;
+  padding: 1rem;
+  margin: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  bottom: -10px;
+  left: 30px;
+  transform: rotate(45deg);
+}
+
+/* 优化后的留言板样式 */
+.message-board {
+  background: #fff;
+  border-radius: 25px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+  /* 增加阴影强度 */
+  position: relative;
+  overflow: hidden;
+  margin: 2rem 0;
+  border: 3px solid rgba(255, 105, 180, 0.2);
+  /* 增加边框 */
+}
+
+.message-board::before {
+  content: '';
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background: #ffebf2;
+  border-radius: 50%;
+  top: -75px;
+  right: -75px;
+  opacity: 0.8;
+  /* 调整透明度 */
+}
+
+.message-board::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: #ffe5ee;
+  border-radius: 50%;
+  bottom: -50px;
+  left: -50px;
+  opacity: 0.8;
+  /* 调整透明度 */
+}
+
+.message-input-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+#messageInput {
+  flex: 1;
+  padding: 1.2rem 1.5rem;
+  /* 增加内边距 */
+  border: 2px solid #ff69b4;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  /* 增大字体大小 */
+  outline: none;
+  transition: all 0.3s;
+  box-shadow: 0 3px 10px rgba(255, 105, 180, 0.1);
+  /* 增加输入框阴影 */
+}
+
+#messageInput:focus {
+  border-color: #ff1493;
+  box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.2), 0 3px 10px rgba(255, 105, 180, 0.3);
+  /* 增加聚焦时的阴影 */
+}
+
+.send-button {
+  background: linear-gradient(45deg, #ff69b4, #ff1493);
+  /* 使用渐变背景 */
+  color: white;
+  border: none;
+  padding: 1.2rem 2.2rem;
+  /* 增加内边距 */
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+  /* 增加按钮阴影 */
+}
+
+.send-button:hover {
+  background: linear-gradient(45deg, #ff1493, #ff69b4);
+  /* 悬停时渐变背景反转 */
+  transform: translateY(-3px);
+  /* 悬停时上移更多 */
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.5);
+  /* 悬停时增加阴影强度 */
+}
+
+.send-button:active {
+  transform: translateY(0);
+}
+
+.message-list {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.message-item {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 20px;
+  position: relative;
+  animation: slideIn 0.5s ease-out;
+  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
+  /* 增加留言项阴影 */
+  border: 2px solid rgba(255, 105, 180, 0.1);
+  /* 增加留言项边框 */
+}
+
+.message-item::before {
+  content: '💌';
+  position: absolute;
+  left: -15px;
+  top: -15px;
+  background: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.message-item::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #ff69b4;
+  border-radius: 50%;
+  bottom: -5px;
+  right: 20px;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fall {
+  from {
+    top: -10%;
+  }
+
+  to {
+    top: 110%;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
