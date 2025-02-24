@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="text/css" rel="stylesheet" href="./life.css">
+  <script type="text/javascript" src="./life.js"></script>
+  <!-- 引入 Vue 2 的 CDN 链接 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="life-content">
+      <div class="bubble">
+        <h2>🌟 关于琳 🌟</h2>
+        <p>这里是全世界最可爱女孩的专属空间！</p>
+        <p>🎀 爱好：收集快乐 | 📸 拍照达人 | 🍰 甜品鉴赏家 | 🎵 音乐爱好者 | 📚 阅读小能手</p>
+        <p>琳喜欢在闲暇时光里，听着喜欢的音乐，捧着一本好书，享受宁静的阅读时光。她也热衷于探索各种美味的甜品店，发现隐藏在城市角落里的甜蜜宝藏。</p>
+      </div>
+
+      <div class="bubble">
+        <h2>📸 更多快乐瞬间</h2>
+        <div class="photo-wall">
+          <img v-for="(photo, index) in photos" :key="index" :src="photo.src" :alt="photo.alt" class="photo">
+        </div>
+        <p>这些照片记录了琳生活中的点点滴滴，每一张都充满了快乐和温暖。无论是和朋友的聚会，还是独自的旅行，琳总是能找到生活中的美好瞬间。</p>
+      </div>
+
+      <div class="bubble">
+        <h2>🎵 琳的音乐推荐</h2>
+        <p>琳最近喜欢的歌曲列表，每一首都能带你进入一个充满梦幻的音乐世界。</p>
+        <ul>
+          <li>《Love Story》 - Taylor Swift</li>
+          <li>《A Sky Full of Stars》 - Coldplay</li>
+          <li>《Something Just Like This》 - The Chainsmokers & Coldplay</li>
+        </ul>
+      </div>
+
+      <div class="bubble">
+        <h2>📚 琳的阅读分享</h2>
+        <p>琳最近读过的好书，每一本都能带给你不同的思考和感悟。</p>
+        <ul>
+          <li>《小王子》 - 安托万·德·圣埃克苏佩里</li>
+          <li>《追风筝的人》 - 卡勒德·胡赛尼</li>
+          <li>《平凡的世界》 - 路遥</li>
+        </ul>
+      </div>
+
+      <div class="message-board">
+        <h2>💖 留言板 💖</h2>
+        <div class="message-list" ref="messageBoard"></div>
+
+        <div class="message-input-container">
+          <input type="text" v-model="messageInput" placeholder="写下你的祝福..." id="messageInput">
+          <button class="send-button" @click="addMessage">
+            <span>发送</span>
+            <span>✨</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          messageInput: '',
+          messages: JSON.parse(localStorage.getItem('messages')) || [],
+          photos: [
+            { src: 'https://s.coze.cn/t/2B3oU-ZKQLM/', alt: '快乐时刻' },
+            { src: 'https://s.coze.cn/t/dQFCmltpfaU/', alt: '可爱瞬间' },
+            { src: 'https://s.coze.cn/t/c2Ovz0O-G6w/', alt: '美食时光' },
+            { src: 'https://example.com/photo4.jpg', alt: '音乐时光' },
+            { src: 'https://example.com/photo5.jpg', alt: '阅读时光' }
+          ],
+        }
+      },
+      methods: {
+        // 留言功能
+        addMessage() {
+          if (this.messageInput.trim()) {
+            this.messages.push(this.messageInput);
+            localStorage.setItem('messages', JSON.stringify(this.messages));
+            this.updateMessageBoard();
+            this.messageInput = '';
+          }
+        },
+        updateMessageBoard() {
+          const board = this.$refs.messageBoard;
+          if (board) {
+            board.innerHTML = this.messages.map(msg =>
+              `<div class="message-item">${msg}</div>`
+            ).join('');
+          } else {
+            console.error("Element with ref 'messageBoard' not found.");
+          }
+        }
+      },
+      mounted() {
+        this.updateMessageBoard();
+      }
+    });
+
+
+  </script>
+</body>
+
+</html>

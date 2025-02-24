@@ -4,117 +4,99 @@
 <head>
   <meta charset="UTF-8">
   <title>祝琳的快乐星球🌠</title>
-  <link rel="stylesheet" href="./static/css/index.css" />
+  <style type="text/css">
+    :root {
+      --main-color: #ff69b4;
+      --bg-color: #fff0f6;
+    }
+
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: var(--bg-color);
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    @font-face {
+      font-family: digit;
+      src: url('digital-7_mono.ttf') format("truetype");
+    }
+
+    iframe {
+      border: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      background: transparent;
+    }
+
+    /* 为不同的 iframe 设置不同的高度 */
+    iframe[src*="headerNav"] {
+      height: 200px;  /* 头部导航的高度 */
+    }
+
+    iframe[src*="love"] {
+      height: 600px;  /* 爱心动画的高度 */
+    }
+
+    iframe[src*="life"] {
+      height: 1600px;  /* 生活日常的高度 */
+    }
+
+    /* 针对移动设备的响应式调整 */
+    @media screen and (max-width: 768px) {
+      iframe[src*="headerNav"] {
+        height: 50px;
+      }
+
+      iframe[src*="love"] {
+        height: 400px;
+      }
+
+      iframe[src*="life"] {
+        height: 600px;
+      }
+    }
+
+    /* 针对 Webkit 浏览器（Chrome、Safari 等）隐藏滚动条  */
+    iframe::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 针对 Firefox 浏览器隐藏滚动条 */
+    iframe {
+      scrollbar-width: none;
+    }
+  </style>
+  <link rel="stylesheet" href="./static/css/reset.css" />
   <!-- 引入 Vue 2 的 CDN 链接 -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <div class="header">
-      <div class="heart-rain" ref="heartContainer"></div>
-      <h1 class="title">✨ 琳可爱的快乐星球 ✨</h1>
-      <p>❤️ 每天都要可可爱爱 ❤️</p>
-    </div>
 
-    <div class="content">
-      <div class="bubble">
-        <h2>🌟 关于琳 🌟</h2>
-        <p>这里是全世界最可爱女孩的专属空间！</p>
-        <p>🎀 爱好：收集快乐 | 📸 拍照达人 | 🍰 甜品鉴赏家 | 🎵 音乐爱好者 | 📚 阅读小能手</p>
-        <p>琳喜欢在闲暇时光里，听着喜欢的音乐，捧着一本好书，享受宁静的阅读时光。她也热衷于探索各种美味的甜品店，发现隐藏在城市角落里的甜蜜宝藏。</p>
-      </div>
+    <!-- 头部-->
+    <iframe src="./components/headerNav/headerNav.html" scrolling="no"></iframe>
 
-      <div class="bubble">
-        <h2>📸 更多快乐瞬间</h2>
-        <div class="photo-wall">
-          <img v-for="(photo, index) in photos" :key="index" :src="photo.src" :alt="photo.alt" class="photo">
-        </div>
-        <p>这些照片记录了琳生活中的点点滴滴，每一张都充满了快乐和温暖。无论是和朋友的聚会，还是独自的旅行，琳总是能找到生活中的美好瞬间。</p>
-      </div>
+    <!-- 爱心动画 -->
+    <iframe src="./page/love/love.html" scrolling="no"></iframe>
 
-      <div class="bubble">
-        <h2>🎵 琳的音乐推荐</h2>
-        <p>琳最近喜欢的歌曲列表，每一首都能带你进入一个充满梦幻的音乐世界。</p>
-        <ul>
-          <li>《Love Story》 - Taylor Swift</li>
-          <li>《A Sky Full of Stars》 - Coldplay</li>
-          <li>《Something Just Like This》 - The Chainsmokers & Coldplay</li>
-        </ul>
-      </div>
+    <!-- 生活日常 -->
+    <iframe src="./page/life/life.html" scrolling="no"></iframe>
 
-      <div class="bubble">
-        <h2>📚 琳的阅读分享</h2>
-        <p>琳最近读过的好书，每一本都能带给你不同的思考和感悟。</p>
-        <ul>
-          <li>《小王子》 - 安托万·德·圣埃克苏佩里</li>
-          <li>《追风筝的人》 - 卡勒德·胡赛尼</li>
-          <li>《平凡的世界》 - 路遥</li>
-        </ul>
-      </div>
-
-      <div class="message-board">
-        <h2>💖 留言板 💖</h2>
-        <div class="message-list" ref="messageBoard"></div>
-
-        <div class="message-input-container">
-          <input type="text" v-model="messageInput" placeholder="写下你的祝福..." id="messageInput">
-          <button class="send-button" @click="addMessage">
-            <span>发送</span>
-            <span>✨</span>
-          </button>
-        </div>
-      </div>
-    </div>
   </div>
+
 
   <script>
     new Vue({
       el: '#app',
       data: {
-        messageInput: '',
-        messages: JSON.parse(localStorage.getItem('messages')) || [],
-        photos: [
-          { src: 'https://s.coze.cn/t/2B3oU-ZKQLM/', alt: '快乐时刻' },
-          { src: 'https://s.coze.cn/t/dQFCmltpfaU/', alt: '可爱瞬间' },
-          { src: 'https://s.coze.cn/t/c2Ovz0O-G6w/', alt: '美食时光' },
-          { src: 'https://example.com/photo4.jpg', alt: '音乐时光' },
-          { src: 'https://example.com/photo5.jpg', alt: '阅读时光' }
-        ]
       },
       methods: {
-        // 创建爱心雨
-        createHearts() {
-          const heartContainer = this.$refs.heartContainer;
-          for (let i = 0; i < 50; i++) {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.animationDelay = Math.random() * 2 + 's';
-            heartContainer.appendChild(heart);
-          }
-        },
-        // 留言功能
-        addMessage() {
-          if (this.messageInput.trim()) {
-            this.messages.push(this.messageInput);
-            localStorage.setItem('messages', JSON.stringify(this.messages));
-            this.updateMessageBoard();
-            this.messageInput = '';
-          }
-        },
-        updateMessageBoard() {
-          const board = this.$refs.messageBoard;
-          board.innerHTML = this.messages.map(msg =>
-            `<div class="message-item">${msg}</div>`
-          ).join('');
-        }
+
       },
       mounted() {
-        this.createHearts();
-        this.updateMessageBoard();
-
         // 添加点击特效
         document.body.addEventListener('click', (e) => {
           const x = e.pageX;

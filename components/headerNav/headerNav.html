@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link type="text/css" rel="stylesheet" href="./headerNav.css">
+  <!-- 引入 Vue 2 的 CDN 链接 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="header">
+      <div class="heart-rain" ref="heartContainer"></div>
+      <h1 class="title">✨ 琳可爱的快乐星球 ✨</h1>
+      <p>❤️ 每天都要可可爱爱 ❤️</p>
+    </div>
+  </div>
+
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+      },
+      methods: {
+        // 创建爱心雨
+        createHearts() {
+          const heartContainer = this.$refs.heartContainer;
+          for (let i = 0; i < 50; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heartContainer.appendChild(heart);
+          }
+        },
+      },
+      mounted() {
+        this.createHearts();
+      }
+    });
+  </script>
+</body>
+
+</html>

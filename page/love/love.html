@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="text/css" rel="stylesheet" href="./love.css">
+  <script type="text/javascript" src="./love.js"></script>
+  <!-- 引入 Vue 2 的 CDN 链接 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div id="love-content">
+      <!-- 打印机字体生成 -->
+      <div id="code">
+        <div class="keyword" v-for="(item, index) in msgHtml" :key="index">
+          <h4>{{item.title || ''}}</h4>
+          <p>&nbsp;&nbsp;{{ item.text }}</p>
+        </div>
+      </div>
+      <!-- 爱心生成 -->
+      <div id="loveHeart" ref="loveHeart">
+        <canvas id="garden"></canvas>
+        <div id="words">
+          <div id="messages">
+            琳可爱，我们已经相恋了
+            <div id="elapseClock"></div>
+          </div>
+          <div id="loveu">
+            &nbsp;&nbsp;&nbsp;&nbsp;山无棱,天地合,才敢与君绝<br />
+            <div class="signature">小满满&琳可爱</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        together: new Date("2024.03.17"),
+        msgHtml: [
+          {
+            title: '海滨路： 2024.03.17（表白）',
+            text: '我们散步去海滨路，此时我的心情是那么忐忑不安，看着每个地点都有来来往往的路人，苦寻时机的窗口，以免待会尴尬下不来台，终于迎来一段间隙没有那么多人，我鼓起勇气颤颤抖抖就说! 犹记得那天我没有手捧鲜花，也没有准备啥礼物，带着一颗紧张、真诚的心说了一段不是那么通顺但绝对是肺腑之言的表白，我想知道当时你是怎样的心情？（哈哈哈）。'
+          },
+          {
+            title: '',
+            text: '之后带着一颗悬着的心表情略带羞涩的去扒拉你那捉紧衣服、不知所措的小手手，你还略带矜持象征性挣扎一下，哼，其实你的内心早已嘭嘭直跳。 记得那天牵着你的小手漫无目标走了一圈又一圈，大脑一直沉浸在这美好的时刻，可是时间飞快，到了要回深圳搬砖，但那时只想一直拉着你的手不想放开。'
+          },
+        ],
+      },
+      methods: {
+       
+      },
+      mounted() {
+        if (!document.createElement('canvas').getContext) {
+          const msg = document.createElement("div");
+          msg.id = "errorMsg";
+          msg.innerHTML = "Your browser doesn't support HTML5!<br/>Recommend use Chrome 14+/IE 9+/Firefox 7+/Safari 4+";
+          document.body.appendChild(msg);
+          document.getElementById("code").style.display = "none";
+        } else {
+          setTimeout(() => {
+            // 生成爱心
+            startHeartAnimation();
+          }, 5000);
+
+          // 时间显示
+          timeElapse(this.together);
+          setInterval(() => {
+            timeElapse(this.together);
+          }, 500);
+
+          const codeElement = document.getElementById("code");
+          if (codeElement) {
+            const keyword = codeElement.querySelectorAll(".keyword");
+            keyword.forEach((item) => item.style.display = "block");
+            typewriter(codeElement);
+          } else {
+            console.error("Element with id 'code' not found.");
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
