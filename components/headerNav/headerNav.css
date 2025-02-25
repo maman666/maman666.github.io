@@ -1,12 +1,22 @@
+
+.header-app {
+  width: 1236px;
+  height: 100%;
+  margin: 0 auto;
+}
+
 .header {
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(45deg, #ff9ec8, #ffd3e0);
+  /* background: linear-gradient(45deg, #ff9ec8, #fff0f6); */
+  background: linear-gradient(to bottom, #ff9ec8, #fff0f6);
   position: relative;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 158, 200, 0.8);
 }
 
 .title {
-  color: var(--main-color);
+  color: #ff69b4;
   font-size: 3rem;
   text-shadow: 2px 2px #fff;
   animation: bounce 2s infinite;

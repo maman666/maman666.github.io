@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link type="text/css" rel="stylesheet" href="./love.css">
   <script type="text/javascript" src="./love.js"></script>
+  <script src="../../utils/index.js"></script>
   <!-- 引入 Vue 2 的 CDN 链接 -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
+
 <body>
-  <div id="app">
+  <div id="app" class="love-app">
     <div id="love-content">
       <!-- 打印机字体生成 -->
       <div id="code">
         <div class="keyword" v-for="(item, index) in msgHtml" :key="index">
           <h4>{{item.title || ''}}</h4>
-          <p>&nbsp;&nbsp;{{ item.text }}</p>
+          <p class="love-text">&nbsp;&nbsp;{{ item.text }}</p>
         </div>
       </div>
       <!-- 爱心生成 -->
@@ -41,8 +44,8 @@
         together: new Date("2024.03.17"),
         msgHtml: [
           {
-            title: '海滨路： 2024.03.17（表白）',
-            text: '我们散步去海滨路，此时我的心情是那么忐忑不安，看着每个地点都有来来往往的路人，苦寻时机的窗口，以免待会尴尬下不来台，终于迎来一段间隙没有那么多人，我鼓起勇气颤颤抖抖就说! 犹记得那天我没有手捧鲜花，也没有准备啥礼物，带着一颗紧张、真诚的心说了一段不是那么通顺但绝对是肺腑之言的表白，我想知道当时你是怎样的心情？（哈哈哈）。'
+            title: '海滨路： 2024.03.17',
+            text: '回忆起散步去海滨路，此时我的心情是那么忐忑不安，看着每个地点都有来来往往的路人，苦寻时机的窗口，以免待会尴尬下不来台，终于迎来一段间隙没有那么多人，我鼓起勇气颤颤抖抖就说! 犹记得那天我没有手捧鲜花，也没有准备啥礼物，带着一颗紧张、真诚的心说了一段不是那么通顺但绝对是肺腑之言的表白，我想知道当时你是怎样的心情？（哈哈哈）。'
           },
           {
             title: '',
@@ -50,10 +53,39 @@
           },
         ],
       },
+      created() {
+        // 在子页面接收消息
+        window.addEventListener('message', (event) => {
+          console.log('子组件love收到消息：', event.data);
+          // 验证消息来源
+          // if (event.origin !== window.location.origin) {
+          //   console.log('收到其他域名消息，已拦截：', event.origin);
+          //   return;
+          // }
+          
+          // 验证消息类型
+          const { type, message } = event.data;
+          if (type === 'love') {
+            // 这里可以访问 Vue 实例的数据和方法
+            this.handleParentMessage(message);
+          }
+        });
+      },
       methods: {
-       
+        handleParentMessage(message) {
+          // 处理来自父页面的消息
+          // this.someData = message;
+        },
+        // 向父页面发送消息
+        sendMessageToParent(data) {
+          window.parent.postMessage({
+            type: 'love',
+            message: data
+          }, '*');
+        }
       },
       mounted() {
+        addClickHeartEffect();
         if (!document.createElement('canvas').getContext) {
           const msg = document.createElement("div");
           msg.id = "errorMsg";
@@ -76,7 +108,25 @@
           if (codeElement) {
             const keyword = codeElement.querySelectorAll(".keyword");
             keyword.forEach((item) => item.style.display = "block");
-            typewriter(codeElement);
+
+            // 基本使用
+            // typewriter(codeElement);
+
+            // 使用高级配置
+            typewriter(codeElement, {
+              // speed: 100,                    // 较慢的打字速度
+              // cursorChar: '|',              // 使用竖线作为光标
+              // cursorBlink: true,            // 启用光标闪烁
+              // startDelay: 1000,             // 延迟1秒开始
+              onComplete: () => {
+                console.log('打字效果完成！');
+                window.parent.postMessage({
+                  type: 'love',
+                  message: 'typing-complete'
+                }, '*');
+              }
+            });
+
           } else {
             console.error("Element with id 'code' not found.");
           }
@@ -85,4 +135,5 @@
     });
   </script>
 </body>
+
 </html>

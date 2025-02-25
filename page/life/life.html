@@ -6,12 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link type="text/css" rel="stylesheet" href="./life.css">
   <script type="text/javascript" src="./life.js"></script>
+  <script src="../../utils/index.js"></script>
   <!-- 引入 Vue 2 的 CDN 链接 -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 
 <body>
-  <div id="app">
+  <div id="app" class="life-app">
     <div class="life-content">
       <div class="bubble">
         <h2>🌟 关于琳 🌟</h2>
@@ -100,6 +101,7 @@
         }
       },
       mounted() {
+        addClickHeartEffect();
         this.updateMessageBoard();
       }
     });

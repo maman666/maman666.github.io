@@ -28,8 +28,6 @@ window.onload = function () {
   // 设置 love-content 的 margin-top 和 margin-left 计算上边距使内容垂直居中/水平居中 同时确保最小边距为10px
   loveContent.style.marginTop =
     Math.max((window.innerHeight - loveContent.offsetHeight) / 2, 10) + "px";
-  loveContent.style.marginLeft =
-    Math.max((window.innerWidth - loveContent.offsetWidth) / 2, 10) + "px";
 
   // renderLoop
   setInterval(function () {
@@ -85,35 +83,6 @@ function startHeartAnimation() {
       angle += 0.2;
     }
   }, interval);
-}
-
-function typewriter(element) {
-  const str = element.innerHTML;
-  let progress = 0;
-  element.innerHTML = "";
-  const timer = setInterval(function () {
-    // 检查当前位置是否是 &nbsp; 的开始
-    if (str.substr(progress, 6) === "&nbsp;") {
-      progress += 6; // 直接跳过 &nbsp;
-    } else {
-      let current = str.substr(progress, 1);
-      if (current == "<") {
-        progress = str.indexOf(">", progress) + 1;
-      } else {
-        progress++;
-      }
-    }
-    
-    // 构建显示内容时处理 &nbsp;
-    let displayText = str.substring(0, progress);
-    element.innerHTML = displayText + (progress & 1 ? "_" : "");
-    
-    if (progress >= str.length) {
-      clearInterval(timer);
-      // 移除最后的光标
-      element.innerHTML = str;
-    }
-  }, 75);
 }
 
 function timeElapse(date) {

@@ -32,29 +32,32 @@
 
     /* 为不同的 iframe 设置不同的高度 */
     iframe[src*="headerNav"] {
-      height: 200px;  /* 头部导航的高度 */
+      height: 200px;
+      /* 头部导航的高度 */
     }
 
     iframe[src*="love"] {
-      height: 600px;  /* 爱心动画的高度 */
+      height: 600px;
+      /* 爱心动画的高度 */
     }
 
     iframe[src*="life"] {
-      height: 1600px;  /* 生活日常的高度 */
+      height: 1600px;
+      /* 生活日常的高度 */
     }
 
     /* 针对移动设备的响应式调整 */
     @media screen and (max-width: 768px) {
       iframe[src*="headerNav"] {
-        height: 50px;
+        height: 200px;
       }
 
       iframe[src*="love"] {
-        height: 400px;
+        height: 600px;
       }
 
       iframe[src*="life"] {
-        height: 600px;
+        height: 1600px;
       }
     }
 
@@ -75,15 +78,14 @@
 
 <body>
   <div id="app">
-
     <!-- 头部-->
     <iframe src="./components/headerNav/headerNav.html" scrolling="no"></iframe>
 
     <!-- 爱心动画 -->
-    <iframe src="./page/love/love.html" scrolling="no"></iframe>
+    <iframe v-show="scene === 'love'" src="./page/love/love.html" scrolling="no"></iframe>
 
     <!-- 生活日常 -->
-    <iframe src="./page/life/life.html" scrolling="no"></iframe>
+    <iframe v-show="scene === 'life'" src="./page/life/life.html" scrolling="no"></iframe>
 
   </div>
 
@@ -92,24 +94,33 @@
     new Vue({
       el: '#app',
       data: {
+        headerIframe: null,
+        loveIframe: null,
+        lifeIframe: null,
+        scene: 'love'
       },
       methods: {
-
+        
+      },
+      created() {
+        // 在父页面接收消息
+        window.addEventListener('message', function (event) {
+          console.log('收到子页面消息：', event.data);
+          if (event.data.type === 'love') {
+            this.scene = event.data.type;
+          }
+        });
       },
       mounted() {
-        // 添加点击特效
-        document.body.addEventListener('click', (e) => {
-          const x = e.pageX;
-          const y = e.pageY;
-          const heart = document.createElement('div');
-          heart.style.position = 'absolute';
-          heart.style.left = x + 'px';
-          heart.style.top = y + 'px';
-          heart.innerHTML = '💖';
-          heart.style.animation = 'pop 0.5s linear';
-          document.body.appendChild(heart);
-          setTimeout(() => heart.remove(), 500);
-        });
+        // 在父页面（index.html）中发送消息 通过 src 属性选择特定的 iframe
+        this.headerIframe = document.querySelector('iframe[src*="headerNav"]');
+        this.loveIframe = document.querySelector('iframe[src*="love"]');
+        this.lifeIframe = document.querySelector('iframe[src*="life"]');
+
+        // 向不同的 iframe 发送消息
+        // headerIframe.contentWindow.postMessage({ type: 'header', message: 'Hello header!' }, '*');
+        // loveIframe.contentWindow.postMessage({ type: 'love', message: 'Hello love!' }, '*');
+        // lifeIframe.contentWindow.postMessage({ type: 'life', message: 'Hello life!' }, '*');
       }
     });
   </script>

@@ -1,6 +1,11 @@
+.life-app {
+  width: 1236px;
+  height: 100%;
+  margin: 0 auto;
+}
 
 .life-content {
-  max-width: 800px;
+  max-width: 1236px;
   margin: 2rem auto;
   padding: 1rem;
 }
@@ -30,8 +35,10 @@
   border-radius: 20px;
   padding: 1rem;
   margin: 1rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   position: relative;
+  border: 1px solid rgba(255, 105, 180, 0.1);
+  box-shadow: 0 10px 30px rgba(182, 107, 145, 0.2);
+  margin-bottom: 2rem;
 }
 
 .bubble::after {
@@ -50,13 +57,12 @@
   background: #fff;
   border-radius: 25px;
   padding: 2rem;
-  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
   /* 增加阴影强度 */
   position: relative;
   overflow: hidden;
   margin: 2rem 0;
   border: 3px solid rgba(255, 105, 180, 0.2);
-  /* 增加边框 */
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
 }
 
 .message-board::before {
