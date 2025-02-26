@@ -46,8 +46,13 @@
       /* 生活日常的高度 */
     }
 
+    iframe[src*="footer"] {
+      height: 400px;
+      /* 底部的高度 */
+    }
+
     /* 针对移动设备的响应式调整 */
-    @media screen and (max-width: 768px) {
+    /* @media screen and (max-width: 768px) {
       iframe[src*="headerNav"] {
         height: 200px;
       }
@@ -59,7 +64,7 @@
       iframe[src*="life"] {
         height: 1600px;
       }
-    }
+    } */
 
     /* 针对 Webkit 浏览器（Chrome、Safari 等）隐藏滚动条  */
     iframe::-webkit-scrollbar {
@@ -86,6 +91,9 @@
 
     <!-- 生活日常 -->
     <iframe v-show="scene === 'life'" src="./page/life/life.html" scrolling="no"></iframe>
+
+    <!-- 底部 -->
+    <iframe src="./components/footer/footer.html" scrolling="no"></iframe>
 
   </div>
 

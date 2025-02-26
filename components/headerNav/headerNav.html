@@ -11,37 +11,55 @@
 <body>
   <div id="app" class="header-app">
     <div class="header">
-      <div class="heart-rain" ref="heartContainer"></div>
+      <!-- <div class="heart-rain" ref="heartContainer"></div> -->
+      <div class="footer-hearts" id="footerHearts"></div>
       <h1 class="title">✨ 琳可爱的快乐星球 ✨</h1>
       <p class="desc">❤️ 每天都要可可爱爱 ❤️</p>
     </div>
   </div>
+</body>
 
-
-  <script>
+<script>
     new Vue({
       el: '#app',
       data: {
       },
       methods: {
         // 创建爱心雨
-        createHearts() {
-          const heartContainer = this.$refs.heartContainer;
-          for (let i = 0; i < 50; i++) {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.animationDelay = Math.random() * 2 + 's';
-            heartContainer.appendChild(heart);
-          }
-        },
+        // createHearts() {
+        //   const heartContainer = this.$refs.heartContainer;
+        //   for (let i = 0; i < 50; i++) {
+        //     const heart = document.createElement('div');
+        //     heart.className = 'heart';
+        //     heart.innerHTML = '❤️';
+        //     heart.style.left = Math.random() * 100 + '%';
+        //     heart.style.animationDelay = Math.random() * 2 + 's';
+        //     heartContainer.appendChild(heart);
+        //   }
+        // },
+        
+        // 创建爱心雨
+      createHearts() {
+        const container = document.getElementById('footerHearts');
+        const heartCount = 50;
+
+        for (let i = 0; i < heartCount; i++) {
+          const heart = document.createElement('div');
+          heart.className = 'footer-heart';
+          heart.innerHTML = '❤️';
+          heart.style.left = Math.random() * 100 + '%';
+          heart.style.top = Math.random() * 100 + '%';
+          heart.style.animationDelay = Math.random() * 5 + 's';
+          heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+          container.appendChild(heart);
+        }
+      },
+
       },
       mounted() {
         this.createHearts();
       }
     });
   </script>
-</body>
 
 </html>

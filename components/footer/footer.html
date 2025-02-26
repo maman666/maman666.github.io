@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link type="text/css" rel="stylesheet" href="./footer.css">
+  <!-- 引入 Vue 2 的 CDN 链接 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app" class="footer-app">
+    <div class="romantic-footer">
+      <div class="footer-hearts" id="footerHearts"></div>
+
+      <div class="footer-content">
+        <h3>🌹 给最可爱的祝琳 🌹</h3>
+        <div class="footer-poem">
+          <p v-for="(item, index) in textArr" :key="index">{{ item }}</p>
+        </div>
+        <div class="footer-copyright">
+          © 2025 祝琳的快乐星球 | 由全宇宙的祝福驱动
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      textArr: [
+        '❤️你是银河馈赠的月亮',
+        '是春日限定的美好',
+        '愿快乐如星 常伴左右',
+        '让甜蜜似糖 永驻心间 ❤️'
+      ]
+    },
+    methods: {
+      // 创建爱心雨
+      createHearts() {
+        const container = document.getElementById('footerHearts');
+        const heartCount = 50;
+
+        for (let i = 0; i < heartCount; i++) {
+          const heart = document.createElement('div');
+          heart.className = 'footer-heart';
+          heart.innerHTML = '❤️';
+          heart.style.left = Math.random() * 100 + '%';
+          heart.style.top = Math.random() * 100 + '%';
+          heart.style.animationDelay = Math.random() * 5 + 's';
+          heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+          container.appendChild(heart);
+        }
+      },
+    },
+    mounted() {
+      this.createHearts();
+    }
+  });
+</script>
+
+</html>

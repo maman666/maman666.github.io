@@ -86,3 +86,40 @@ function typewriter(element, options = {}) {
     startTyping();
   }
 }
+
+
+// 流星雨
+// 更新后的流星生成函数
+function createMeteors() {
+  const container = document.getElementById('meteorContainer');
+  const meteorCount = 20; // 增加流星数量
+
+  for (let i = 0; i < meteorCount; i++) {
+      const meteor = document.createElement('div');
+      meteor.className = 'meteor';
+      
+      // 随机参数
+      const size = Math.random() * 2 + 1;
+      const delay = Math.random() * 15;
+      const duration = Math.random() * 3 + 2;
+      
+      // 样式设置
+      meteor.style.left = Math.random() * 30 + 70 + '%';
+      meteor.style.top = Math.random() * 30 + '%';
+      meteor.style.animationDelay = delay + 's';
+      meteor.style.animationDuration = duration + 's';
+      meteor.style.borderBottomWidth = size + 'px';
+      meteor.style.filter = `drop-shadow(0 0 ${size * 3}px rgba(255,105,180,0.8))`;
+      
+      // 拖尾样式
+      meteor.style.setProperty('--tail-length', Math.random() * 100 + 150 + 'px');
+      meteor.style.setProperty('--tail-opacity', Math.random() * 0.5 + 0.3);
+      
+      // 创建拖尾
+      const tail = document.createElement('div');
+      tail.className = 'tail';
+      meteor.appendChild(tail);
+      
+      container.appendChild(meteor);
+  }
+}

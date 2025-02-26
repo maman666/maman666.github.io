@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link type="text/css" rel="stylesheet" href="./love.css">
+  <link type="text/css" rel="stylesheet" href="../../utils/index.css">
   <script type="text/javascript" src="./love.js"></script>
   <script src="../../utils/index.js"></script>
   <!-- 引入 Vue 2 的 CDN 链接 -->
@@ -13,6 +14,7 @@
 
 <body>
   <div id="app" class="love-app">
+    <div class="meteor-shower" id="meteorContainer"></div>
     <div id="love-content">
       <!-- 打印机字体生成 -->
       <div id="code">
@@ -85,7 +87,10 @@
         }
       },
       mounted() {
+        // 点击爱心
         addClickHeartEffect();
+        // 生成流星
+        // createMeteors();
         if (!document.createElement('canvas').getContext) {
           const msg = document.createElement("div");
           msg.id = "errorMsg";
