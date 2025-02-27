@@ -1,0 +1,141 @@
+:root {
+  --main-color: #ff69b4;
+  --bg-color: #fff0f6;
+}
+
+body {
+  font-family: "Comic Sans MS", cursive;
+  background: var(--bg-color);
+  margin: 0;
+  overflow-x: hidden;
+}
+
+@font-face {
+  font-family: digit;
+  src: url("digital-7_mono.ttf") format("truetype");
+}
+
+iframe {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: transparent;
+}
+
+/* 为不同的 iframe 设置不同的高度 */
+iframe[src*="headerNav"] {
+  height: 200px;
+  /* 头部导航的高度 */
+}
+
+iframe[src*="love"] {
+  height: 630px;
+  /* 爱心动画的高度 */
+}
+
+iframe[src*="life"] {
+  height: 1600px;
+  /* 生活日常的高度 */
+}
+
+iframe[src*="footer"] {
+  height: 400px;
+  margin-top: -100px;
+  /* 底部的高度 */
+}
+
+/* 针对移动设备的响应式调整 */
+/* 响应式布局断点 */
+/* 大屏幕设备 (>=1200px) */
+@media screen and (min-width: 1200px) {
+  iframe {
+    width: 100%;
+  }
+}
+
+/* 中等屏幕设备 (>=992px) */
+@media screen and (max-width: 1199px) {
+  iframe {
+    width: 100%;
+  }
+}
+
+/* 平板设备 (>=768px) */
+@media screen and (max-width: 991px) {
+  iframe {
+    width: 100%;
+  }
+
+  iframe[src*="headerNav"] {
+    height: 180px;
+  }
+
+  iframe[src*="love"] {
+    height: 580px;
+  }
+
+  iframe[src*="life"] {
+    height: 1400px;
+  }
+
+  iframe[src*="footer"] {
+    height: 350px;
+  }
+}
+
+/* 手机设备 (<768px) */
+@media screen and (max-width: 767px) {
+  iframe {
+    width: 100%;
+  }
+
+  iframe[src*="headerNav"] {
+    height: 160px;
+  }
+
+  iframe[src*="love"] {
+    height: 500px;
+  }
+
+  iframe[src*="life"] {
+    height: 1200px;
+  }
+
+  iframe[src*="footer"] {
+    height: 300px;
+  }
+}
+
+/* 小屏手机设备 (<576px) */
+@media screen and (max-width: 575px) {
+  iframe {
+    width: 100%;
+  }
+
+  iframe[src*="headerNav"] {
+    height: 140px;
+  }
+
+  iframe[src*="love"] {
+    height: 450px;
+  }
+
+  iframe[src*="life"] {
+    height: 1000px;
+  }
+
+  iframe[src*="footer"] {
+    height: 250px;
+  }
+}
+
+/* 针对 Webkit 浏览器（Chrome、Safari 等）隐藏滚动条  */
+iframe::-webkit-scrollbar {
+  display: none;
+}
+
+/* 针对 Firefox 浏览器隐藏滚动条 */
+iframe {
+  scrollbar-width: none;
+}

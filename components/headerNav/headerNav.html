@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <link type="text/css" rel="stylesheet" href="./headerNav.css">
+  <script src="../../utils/index.js"></script>
   <!-- 引入 Vue 2 的 CDN 链接 -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
@@ -11,34 +12,20 @@
 <body>
   <div id="app" class="header-app">
     <div class="header">
-      <!-- <div class="heart-rain" ref="heartContainer"></div> -->
       <div class="footer-hearts" id="footerHearts"></div>
       <h1 class="title">✨ 琳可爱的快乐星球 ✨</h1>
-      <p class="desc">❤️ 每天都要可可爱爱 ❤️</p>
+      <h4 class="desc">❤️ 每天都要可可爱爱 开开心心哦 ❤️</h4>
     </div>
   </div>
 </body>
 
 <script>
-    new Vue({
-      el: '#app',
-      data: {
-      },
-      methods: {
-        // 创建爱心雨
-        // createHearts() {
-        //   const heartContainer = this.$refs.heartContainer;
-        //   for (let i = 0; i < 50; i++) {
-        //     const heart = document.createElement('div');
-        //     heart.className = 'heart';
-        //     heart.innerHTML = '❤️';
-        //     heart.style.left = Math.random() * 100 + '%';
-        //     heart.style.animationDelay = Math.random() * 2 + 's';
-        //     heartContainer.appendChild(heart);
-        //   }
-        // },
-        
-        // 创建爱心雨
+  new Vue({
+    el: '#app',
+    data: {
+    },
+    methods: {
+      // 创建爱心雨
       createHearts() {
         const container = document.getElementById('footerHearts');
         const heartCount = 50;
@@ -55,11 +42,88 @@
         }
       },
 
+      // 头部弹窗动画
+      headerAnimation() {
+        const headerApp = document.querySelector('.header-app');
+
+        let resizeTimeout = null;
+        let stopCurrentAnimation = null;
+
+        // 居中定位函数
+        const centerElement = () => {
+          const windowWidth = window.innerWidth;
+          const elementWidth = headerApp.offsetWidth;
+          const centerPosition = (windowWidth - elementWidth) / 2;
+
+          // 如果有正在进行的动画，先停止它
+          if (stopCurrentAnimation) {
+            stopCurrentAnimation();
+          }
+
+          // 开始新的动画
+          stopCurrentAnimation = elasticMove(headerApp, {
+            target: centerPosition,
+            property: 'left',
+            interval: 16,    // 使用更流畅的帧率
+            onComplete: () => {
+              stopCurrentAnimation = null;
+              console.log('头部弹性动画完成*-----');
+              window.parent.postMessage({
+                type: 'headerNav',
+                message: 'complete'
+              }, '*');
+            }
+          });
+        };
+
+        // 初始化
+        centerElement();
+
+        // resize事件处理函数
+        const handleResize = () => {
+          // 取消之前的延时
+          if (resizeTimeout) {
+            clearTimeout(resizeTimeout);
+          }
+
+          // 设置新的延时
+          resizeTimeout = setTimeout(() => {
+            centerElement();
+            resizeTimeout = null;
+          }, 150);
+        };
+
+        
+
+        // 添加resize事件监听
+        window.addEventListener('resize', handleResize);
+
+        // 将清理函数添加到Vue实例上，以便在destroyed钩子中调用
+        this.cleanupHeaderAnimation = () => {
+          window.removeEventListener('resize', handleResize);
+          if (resizeTimeout) {
+            clearTimeout(resizeTimeout);
+          }
+          if (stopCurrentAnimation) {
+            stopCurrentAnimation();
+          }
+        };
       },
-      mounted() {
-        this.createHearts();
+
+    },
+    mounted() {
+      this.createHearts();
+
+      // 头部弹窗动画
+      this.headerAnimation();
+    },
+    destroyed() {
+      // 组件销毁时清理事件监听和定时器
+      if (this.cleanupHeaderAnimation) {
+        this.cleanupHeaderAnimation();
       }
-    });
-  </script>
+    }
+  });
+</script>
 
 </html>

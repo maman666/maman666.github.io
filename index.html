@@ -4,79 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>祝琳的快乐星球🌠</title>
-  <style type="text/css">
-    :root {
-      --main-color: #ff69b4;
-      --bg-color: #fff0f6;
-    }
-
-    body {
-      font-family: 'Comic Sans MS', cursive;
-      background: var(--bg-color);
-      margin: 0;
-      overflow-x: hidden;
-    }
-
-    @font-face {
-      font-family: digit;
-      src: url('digital-7_mono.ttf') format("truetype");
-    }
-
-    iframe {
-      border: none;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      background: transparent;
-    }
-
-    /* 为不同的 iframe 设置不同的高度 */
-    iframe[src*="headerNav"] {
-      height: 200px;
-      /* 头部导航的高度 */
-    }
-
-    iframe[src*="love"] {
-      height: 600px;
-      /* 爱心动画的高度 */
-    }
-
-    iframe[src*="life"] {
-      height: 1600px;
-      /* 生活日常的高度 */
-    }
-
-    iframe[src*="footer"] {
-      height: 400px;
-      /* 底部的高度 */
-    }
-
-    /* 针对移动设备的响应式调整 */
-    /* @media screen and (max-width: 768px) {
-      iframe[src*="headerNav"] {
-        height: 200px;
-      }
-
-      iframe[src*="love"] {
-        height: 600px;
-      }
-
-      iframe[src*="life"] {
-        height: 1600px;
-      }
-    } */
-
-    /* 针对 Webkit 浏览器（Chrome、Safari 等）隐藏滚动条  */
-    iframe::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* 针对 Firefox 浏览器隐藏滚动条 */
-    iframe {
-      scrollbar-width: none;
-    }
-  </style>
   <link rel="stylesheet" href="./static/css/reset.css" />
+  <link rel="stylesheet" href="./index.css" />
   <!-- 引入 Vue 2 的 CDN 链接 -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
@@ -87,13 +16,13 @@
     <iframe src="./components/headerNav/headerNav.html" scrolling="no"></iframe>
 
     <!-- 爱心动画 -->
-    <iframe v-show="scene === 'love'" src="./page/love/love.html" scrolling="no"></iframe>
+    <iframe v-if="isLoveShow" src="./page/love/love.html" scrolling="no"></iframe>
 
     <!-- 生活日常 -->
-    <iframe v-show="scene === 'life'" src="./page/life/life.html" scrolling="no"></iframe>
+    <iframe v-if="isLifeShow" src="./page/life/life.html" scrolling="no"></iframe>
 
     <!-- 底部 -->
-    <iframe src="./components/footer/footer.html" scrolling="no"></iframe>
+    <iframe v-if="isFooterShow" src="./components/footer/footer.html" scrolling="no"></iframe>
 
   </div>
 
@@ -105,17 +34,22 @@
         headerIframe: null,
         loveIframe: null,
         lifeIframe: null,
-        scene: 'love'
+        isLoveShow: false,
+        isLifeShow: false,
+        isFooterShow: false,
       },
       methods: {
-        
+
       },
       created() {
         // 在父页面接收消息
-        window.addEventListener('message', function (event) {
-          console.log('收到子页面消息：', event.data);
+        window.addEventListener('message', event => {
+          console.log('收到子页面消息---：', event.data);
+          if (event.data.type === 'headerNav') {
+            this.isLoveShow = true;
+          }
           if (event.data.type === 'love') {
-            this.scene = event.data.type;
+            this.isFooterShow = true;
           }
         });
       },

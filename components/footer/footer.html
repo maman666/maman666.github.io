@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <link type="text/css" rel="stylesheet" href="./footer.css">
   <!-- 引入 Vue 2 的 CDN 链接 -->
+  <script src="../../utils/index.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 
@@ -14,7 +15,7 @@
       <div class="footer-hearts" id="footerHearts"></div>
 
       <div class="footer-content">
-        <h3>🌹 给最可爱的祝琳 🌹</h3>
+        <h3>🌹 小满满心目中的琳 🌹</h3>
         <div class="footer-poem">
           <p v-for="(item, index) in textArr" :key="index">{{ item }}</p>
         </div>
@@ -30,10 +31,10 @@
     el: '#app',
     data: {
       textArr: [
-        '❤️你是银河馈赠的月亮',
-        '是春日限定的美好',
-        '愿快乐如星 常伴左右',
-        '让甜蜜似糖 永驻心间 ❤️'
+        '❤️ 你是银河赠予的皎洁明月',
+        '是春日独有的温柔与绚烂',
+        '愿快乐如繁星，常伴你左右',
+        '让甜蜜似蜜糖，永驻心间 ❤️'
       ]
     },
     methods: {
@@ -56,6 +57,9 @@
     },
     mounted() {
       this.createHearts();
+
+      const footerApp = document.querySelector('.footer-app');
+      freeFall(footerApp);
     }
   });
 </script>

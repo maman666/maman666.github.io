@@ -55,7 +55,7 @@ function getHeartPoint(angle) {
   return [offsetX + x, offsetY + y];
 }
 
-function startHeartAnimation() {
+function startHeartAnimation(fn) {
   const interval = 50;
   let angle = 10;
   const heart = [];
@@ -78,7 +78,10 @@ function startHeartAnimation() {
     }
     if (angle >= 30) {
       clearInterval(animationTimer);
-      showMessages();
+      showMessages(() => {
+        fn && fn();
+      });
+      
     } else {
       angle += 0.2;
     }
@@ -150,7 +153,7 @@ function timeElapse(date) {
   }
 }
 
-function showMessages() {
+function showMessages(fn) {
   adjustWordsPosition();
   const messages = document.getElementById("messages");
   messages.style.opacity = 0;
@@ -162,7 +165,9 @@ function showMessages() {
     messages.style.opacity = opacity;
     if (opacity >= 1) {
       clearInterval(fadeIn);
-      showLoveU();
+      showLoveU(() => {
+        fn && fn();
+      });
     }
   }, 50);
 }
@@ -176,7 +181,7 @@ function adjustWordsPosition() {
 }
 
 
-function showLoveU() {
+function showLoveU(fn) {
   const loveU = document.getElementById("loveu");
   loveU.style.opacity = 0;
   loveU.style.display = "block";
@@ -187,6 +192,7 @@ function showLoveU() {
     loveU.style.opacity = opacity;
     if (opacity >= 1) {
       clearInterval(fadeIn);
+      fn && fn();
     }
   }, 50);
 }

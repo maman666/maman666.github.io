@@ -1,15 +1,15 @@
 .footer-app {
   width: 1236px;
-  height: 100%;
-  margin: 0 auto;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .romantic-footer {
   background: linear-gradient(to top, #ff9ec8, #fff0f6);
-  padding: 3rem 2rem;
   text-align: center;
   position: relative;
   overflow: hidden;
-  margin-top: 4rem;
   box-shadow: 0 -5px 30px rgba(255, 105, 180, 0.2);
   border-radius: 10px;
 }
@@ -50,7 +50,7 @@
 }  
 
 .footer-copyright {
-  margin-top: 2rem;
+  padding-bottom: 2rem;
   opacity: 0.8;
 }
 

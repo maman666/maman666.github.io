@@ -14,8 +14,8 @@
 
 <body>
   <div id="app" class="love-app">
-    <div class="meteor-shower" id="meteorContainer"></div>
     <div id="love-content">
+      <canvas id="love-canvas"></canvas>
       <!-- 打印机字体生成 -->
       <div id="code">
         <div class="keyword" v-for="(item, index) in msgHtml" :key="index">
@@ -46,12 +46,28 @@
         together: new Date("2024.03.17"),
         msgHtml: [
           {
-            title: '海滨路： 2024.03.17',
-            text: '回忆起散步去海滨路，此时我的心情是那么忐忑不安，看着每个地点都有来来往往的路人，苦寻时机的窗口，以免待会尴尬下不来台，终于迎来一段间隙没有那么多人，我鼓起勇气颤颤抖抖就说! 犹记得那天我没有手捧鲜花，也没有准备啥礼物，带着一颗紧张、真诚的心说了一段不是那么通顺但绝对是肺腑之言的表白，我想知道当时你是怎样的心情？（哈哈哈）。'
+            title: '一周年纪念日',
+            text: '琳宝，这是我们的首个纪念日，回想起我们相处的点点滴滴，那些一起漫步的街头巷尾，那些相互倾诉的每天每夜，都如同璀璨星辰点缀在我们的爱情天空。每一次的眼神交汇，每一个温暖的拥抱，都是爱的印证。'
           },
           {
             title: '',
-            text: '之后带着一颗悬着的心表情略带羞涩的去扒拉你那捉紧衣服、不知所措的小手手，你还略带矜持象征性挣扎一下，哼，其实你的内心早已嘭嘭直跳。 记得那天牵着你的小手漫无目标走了一圈又一圈，大脑一直沉浸在这美好的时刻，可是时间飞快，到了要回深圳搬砖，但那时只想一直拉着你的手不想放开。'
+            text: '未来的路途漫长，我们或许将面临风雨，或许会遭遇波折，或许会吵吵闹闹，但只要你伴我身侧，我便拥有勇气与力量去直面所有。'
+          },
+          {
+            title: '',
+            text: '我翘首以盼未来的每一个清晨，能于彼此的怀抱中苏醒；期盼我们一同历经每一次日出日落，携手书写专属于我们的篇章。'
+          },
+          {
+            title: '',
+            text: '我期待着我们一起去看更广阔的世界，去体验不同的风土人情，让每一段旅程都成为我们爱的见证。我也期待着我们共同建立一个温馨的家，充满欢笑和温暖。'
+          },
+          {
+            title: '',
+            text: '希望我可以成为你前行的一束光，希望你永远快乐，是嘴角不经意表露的幸福，希望余生是你，冷暖不弃'
+          },
+          {
+            title: '',
+            text: '琳宝，感谢你走进我的生命，成为我的整个世界。'
           },
         ],
       },
@@ -64,7 +80,7 @@
           //   console.log('收到其他域名消息，已拦截：', event.origin);
           //   return;
           // }
-          
+
           // 验证消息类型
           const { type, message } = event.data;
           if (type === 'love') {
@@ -78,63 +94,304 @@
           // 处理来自父页面的消息
           // this.someData = message;
         },
-        // 向父页面发送消息
-        sendMessageToParent(data) {
-          window.parent.postMessage({
-            type: 'love',
-            message: data
-          }, '*');
+        // 入场动画
+        showAnimation() {
+          const headerApp = document.querySelector('.love-app');
+
+          let resizeTimeout = null;
+          let stopCurrentAnimation = null;
+
+          // 居中定位函数
+          const centerElement = () => {
+            const windowWidth = window.innerWidth;
+            const elementWidth = headerApp.offsetWidth;
+            const centerPosition = (windowWidth - elementWidth) / 2;
+
+            // 如果有正在进行的动画，先停止它
+            if (stopCurrentAnimation) {
+              stopCurrentAnimation();
+            }
+
+            // 开始新的动画
+            stopCurrentAnimation = elasticMove(headerApp, {
+              target: centerPosition,
+              property: 'right',
+              interval: 16,    // 使用更流畅的帧率
+              onComplete: () => {
+                console.log('love入场动画完成-----');
+                stopCurrentAnimation = null;
+              }
+            });
+          };
+
+          // resize事件处理函数
+          const handleResize = () => {
+            // 取消之前的延时
+            if (resizeTimeout) {
+              clearTimeout(resizeTimeout);
+            }
+
+            // 设置新的延时
+            resizeTimeout = setTimeout(() => {
+              centerElement();
+              resizeTimeout = null;
+            }, 150);
+          };
+
+          // 初始居中
+          centerElement();
+
+          // 添加resize事件监听
+          window.addEventListener('resize', handleResize);
+
+          // 将清理函数添加到Vue实例上，以便在destroyed钩子中调用
+          this.cleanupHeaderAnimation = () => {
+            window.removeEventListener('resize', handleResize);
+            if (resizeTimeout) {
+              clearTimeout(resizeTimeout);
+            }
+            if (stopCurrentAnimation) {
+              stopCurrentAnimation();
+            }
+          };
+        },
+        // 主体生成
+        mainGen() {
+          if (!document.createElement('canvas').getContext) {
+            const msg = document.createElement("div");
+            msg.id = "errorMsg";
+            msg.innerHTML = "Your browser doesn't support HTML5!<br/>Recommend use Chrome 14+/IE 9+/Firefox 7+/Safari 4+";
+            document.body.appendChild(msg);
+            document.getElementById("code").style.display = "none";
+          } else {
+            // 时间显示
+            timeElapse(this.together);
+            setInterval(() => {
+              timeElapse(this.together);
+            }, 500);
+
+            const codeElement = document.getElementById("code");
+            if (codeElement) {
+              const keyword = codeElement.querySelectorAll(".keyword");
+              keyword.forEach((item) => item.style.display = "block");
+
+              // 基本使用
+              // typewriter(codeElement);
+
+              // 使用高级配置
+              typewriter(codeElement, {
+                // speed: 100,                    // 较慢的打字速度
+                // cursorChar: '|',              // 使用竖线作为光标
+                // cursorBlink: true,            // 启用光标闪烁
+                // startDelay: 1000,             // 延迟1秒开始
+                onComplete: () => {
+                  console.log('打字效果完成！');
+                  // 生成爱心
+                  startHeartAnimation(() => {
+                    window.parent.postMessage({
+                      type: 'love',
+                      message: 'typing-complete'
+                    }, '*');
+                  });
+                }
+              });
+
+            } else {
+              console.error("Element with id 'code' not found.");
+            }
+          }
+        },
+        // 背景爱心生成
+        loveCanvas() {
+          // 获取画布和上下文
+          const canvas = document.getElementById("love-canvas");
+          if (!canvas) return;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return;
+
+          // 配置参数
+          const CONFIG = {
+            // 心形曲线的精度，值越大心形轮廓越平滑，但会消耗更多性能
+            precision: 100,
+
+            // 画布上同时存在的最大心形数量，用于控制内存使用和性能
+            maxHearts: 80,
+
+            // 心形的颜色和透明度
+            // hsla格式：色相(0=红色)，饱和度(100%=最艳)，亮度(60%=适中)，透明度(0.5=半透明)
+            heartColor: "hsla(0, 100%, 60%,0.3)",
+
+            // 心形的初始大小范围
+            initialSize: {
+              min: 1,    // 最小初始大小
+              max: 3     // 最大初始大小
+            },
+
+            // 心形移动的速度范围（像素/帧）
+            speedRange: {
+              min: -1,   // 最小速度（负值表示反向移动）
+              max: 2   // 最大速度
+            },
+
+            // 心形大小衰减的速度范围（每帧缩小的比例）
+            sizeDecay: {
+              min: 0.01, // 最小衰减速度
+              max: 0.06  // 最大衰减速度
+            }
+          };
+
+          // 状态管理
+          const state = {
+            width: 0,
+            height: 0,
+            hearts: []
+          };
+
+          // 心形类
+          class Heart {
+            constructor(x, y) {
+              this.init(x, y);
+              this.createVertices();
+            }
+
+            init(x, y) {
+              this.x = x || Math.random() * state.width;
+              this.y = y || Math.random() * state.height;
+              this.size = Math.random() * (CONFIG.initialSize.max - CONFIG.initialSize.min) + CONFIG.initialSize.min;
+              this.speedX = this.getRandomSpeed();
+              this.speedY = this.getRandomSpeed();
+              this.speedSize = Math.random() * (CONFIG.sizeDecay.max - CONFIG.sizeDecay.min) + CONFIG.sizeDecay.min;
+              this.vertices = [];
+            }
+
+            getRandomSpeed() {
+              return Math.random() * (CONFIG.speedRange.max - CONFIG.speedRange.min) + CONFIG.speedRange.min;
+            }
+
+            createVertices() {
+              for (let i = 0; i < CONFIG.precision; i++) {
+                const step = (i / CONFIG.precision - 0.5) * (Math.PI * 2);
+                const vector = {
+                  x: 15 * Math.pow(Math.sin(step), 3),
+                  y: -(13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 * step))
+                };
+                this.vertices.push(vector);
+              }
+            }
+
+            draw(ctx) {
+              this.size -= this.speedSize;
+              this.x += this.speedX;
+              this.y += this.speedY;
+
+              ctx.save();
+              ctx.translate(-1000, this.y);
+              ctx.scale(this.size, this.size);
+              ctx.beginPath();
+
+              this.vertices.forEach(vector => {
+                ctx.lineTo(vector.x, vector.y);
+              });
+
+              ctx.globalAlpha = this.size;
+              ctx.shadowBlur = Math.round((3 - this.size) * 10);
+              ctx.shadowColor = CONFIG.heartColor;
+              ctx.shadowOffsetX = this.x + 1000;
+              ctx.globalCompositeOperation = "screen";
+              ctx.closePath();
+              ctx.fill();
+              ctx.restore();
+            }
+          }
+
+          // 初始化画布设置
+          const initCanvas = () => {
+            ctx.strokeStyle = "red";
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = CONFIG.heartColor;
+          };
+
+          // 调整画布大小
+          const handleResize = () => {
+            const parentElement = canvas.parentElement;
+            if (parentElement) {
+              state.width = canvas.width = parentElement.clientWidth;
+              // state.height = canvas.height = parentElement.clientHeight;
+              state.height = canvas.height = window.innerHeight;
+            } else {
+              // 如果找不到父元素，则使用窗口大小作为后备方案
+              state.width = canvas.width = window.innerWidth;
+              state.height = canvas.height = window.innerHeight;
+            }
+          };
+
+          // 处理鼠标/触摸移动
+          const handleMove = (e) => {
+            if (state.hearts.length >= CONFIG.maxHearts) return;
+
+            const coords = e.type === "touchmove" ?
+              { x: e.touches[0].clientX, y: e.touches[0].clientY } :
+              { x: e.clientX, y: e.clientY };
+
+            state.hearts.push(new Heart(coords.x, coords.y));
+            state.hearts.push(new Heart(coords.x, coords.y));
+          };
+
+          // 渲染循环
+          const render = () => {
+            requestAnimationFrame(render);
+
+            // 添加新的心形
+            if (state.hearts.length < CONFIG.maxHearts) {
+              state.hearts.push(new Heart());
+            }
+
+            // 清除画布
+            ctx.clearRect(0, 0, state.width, state.height);
+
+            // 更新和绘制心形
+            state.hearts = state.hearts.filter(heart => {
+              if (heart.size > 0) {
+                heart.draw(ctx);
+                return true;
+              }
+              return false;
+            });
+          };
+
+          // 初始化和事件监听
+          const init = () => {
+            handleResize();
+            initCanvas();
+
+            // window.addEventListener("mousemove", handleMove, { passive: true });
+            // window.addEventListener("touchmove", handleMove, { passive: true });
+            window.addEventListener("resize", handleResize);
+
+            requestAnimationFrame(render);
+          };
+
+          // 启动动画
+          init();
         }
       },
       mounted() {
+        // 出场动画
+        this.showAnimation();
+
         // 点击爱心
         addClickHeartEffect();
-        // 生成流星
-        // createMeteors();
-        if (!document.createElement('canvas').getContext) {
-          const msg = document.createElement("div");
-          msg.id = "errorMsg";
-          msg.innerHTML = "Your browser doesn't support HTML5!<br/>Recommend use Chrome 14+/IE 9+/Firefox 7+/Safari 4+";
-          document.body.appendChild(msg);
-          document.getElementById("code").style.display = "none";
-        } else {
-          setTimeout(() => {
-            // 生成爱心
-            startHeartAnimation();
-          }, 5000);
+        // 背景爱心生成
+        this.loveCanvas();
 
-          // 时间显示
-          timeElapse(this.together);
-          setInterval(() => {
-            timeElapse(this.together);
-          }, 500);
-
-          const codeElement = document.getElementById("code");
-          if (codeElement) {
-            const keyword = codeElement.querySelectorAll(".keyword");
-            keyword.forEach((item) => item.style.display = "block");
-
-            // 基本使用
-            // typewriter(codeElement);
-
-            // 使用高级配置
-            typewriter(codeElement, {
-              // speed: 100,                    // 较慢的打字速度
-              // cursorChar: '|',              // 使用竖线作为光标
-              // cursorBlink: true,            // 启用光标闪烁
-              // startDelay: 1000,             // 延迟1秒开始
-              onComplete: () => {
-                console.log('打字效果完成！');
-                window.parent.postMessage({
-                  type: 'love',
-                  message: 'typing-complete'
-                }, '*');
-              }
-            });
-
-          } else {
-            console.error("Element with id 'code' not found.");
-          }
+        // 主体爱心和文案 时间生成
+        this.mainGen();
+      },
+      destroyed() {
+        // 组件销毁时清理事件监听和定时器
+        if (this.cleanupHeaderAnimation) {
+          this.cleanupHeaderAnimation();
         }
       }
     });
