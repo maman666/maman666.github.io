@@ -142,16 +142,25 @@ function elasticMove(element, options) {
   // 清除之前的定时器
   clearInterval(timer);
 
+  // 新增一个变量来记录循环次数
+  let loopCount = 0;
+  // 最大循环次数，可根据实际情况调整
+  const maxLoopCount = 80; 
+  
   // 开始运动
   timer = setInterval(() => {
     const currentPosition = getCurrentPosition();
-    
+  
     // 计算速度
     speed += (config.target - currentPosition) / config.spring;
     speed *= config.damping;
-
+  
     // 判断是否到达目标
-    if (Math.abs(speed) <= 1 && Math.abs(config.target - currentPosition) <= 1) {
+    const isNearTarget = Math.abs(speed) <= 0.1 && Math.abs(config.target - currentPosition) <= 0.1;
+    const isMaxLoopReached = loopCount >= maxLoopCount;
+  
+    if (isNearTarget || isMaxLoopReached) {
+      console.log('停止弹性运动');
       clearInterval(timer);
       element.style[config.property] = `${config.target}px`;
       speed = 0;
@@ -162,6 +171,7 @@ function elasticMove(element, options) {
     } else {
       element.style[config.property] = `${currentPosition + speed}px`;
     }
+    loopCount++;
   }, config.interval);
 
   // 返回停止函数

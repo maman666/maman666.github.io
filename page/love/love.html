@@ -14,7 +14,7 @@
 
 <body>
   <div id="app" class="love-app">
-    <div id="love-content">
+    <div id="love-content" class="love-content">
       <canvas id="love-canvas"></canvas>
       <!-- 打印机字体生成 -->
       <div id="code">
@@ -365,8 +365,8 @@
             handleResize();
             initCanvas();
 
-            // window.addEventListener("mousemove", handleMove, { passive: true });
-            // window.addEventListener("touchmove", handleMove, { passive: true });
+            window.addEventListener("mousemove", handleMove, { passive: true });
+            window.addEventListener("touchmove", handleMove, { passive: true });
             window.addEventListener("resize", handleResize);
 
             requestAnimationFrame(render);
@@ -381,7 +381,7 @@
         this.showAnimation();
 
         // 点击爱心
-        addClickHeartEffect();
+        // addClickHeartEffect();
         // 背景爱心生成
         this.loveCanvas();
 
