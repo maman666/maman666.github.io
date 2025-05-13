@@ -1,38 +1,57 @@
-
-
 let gardenCtx, gardenCanvas, garden;
 let clientWidth = window.innerWidth;
 let clientHeight = window.innerHeight;
 let offsetX, offsetY;
 
+// 在 window.onload 中添加错误处理
 window.onload = function () {
-  // setup garden
-  const loveHeart = document.getElementById("loveHeart");
-  offsetX = loveHeart.offsetWidth / 2;
-  offsetY = loveHeart.offsetHeight / 2 - 55;
+  try {
+    // setup garden
+    const loveHeart = document.getElementById("loveHeart");
+    if (!loveHeart) {
+      console.error("Element 'loveHeart' not found");
+      return;
+    }
+    offsetX = loveHeart.offsetWidth / 2;
+    offsetY = loveHeart.offsetHeight / 2 - 55;
 
-  gardenCanvas = document.getElementById("garden");
-  gardenCanvas.width = loveHeart.offsetWidth;
-  gardenCanvas.height = loveHeart.offsetHeight;
-  gardenCtx = gardenCanvas.getContext("2d");
-  gardenCtx.globalCompositeOperation = "lighter";
-  garden = new Garden(gardenCtx, gardenCanvas);
+    gardenCanvas = document.getElementById("garden");
+    if (!gardenCanvas) {
+      console.error("Element 'garden' not found");
+      return;
+    }
+    gardenCanvas.width = loveHeart.offsetWidth;
+    gardenCanvas.height = loveHeart.offsetHeight;
+    gardenCtx = gardenCanvas.getContext("2d");
+    if (!gardenCtx) {
+      console.error("Failed to get 2D context for 'garden' canvas");
+      return;
+    }
+    gardenCtx.globalCompositeOperation = "lighter";
+    garden = new Garden(gardenCtx, gardenCanvas);
 
-  const loveContent = document.getElementById("love-content");
-  const code = document.getElementById("code");
-  // 将 love-content 的宽度设置为 loveHeart 和 code 两个元素宽度之和
-  loveContent.style.width = loveHeart.offsetWidth + code.offsetWidth + "px";
-  // 将 love-content 的宽度设置为 loveHeart 和 code 两个元素宽度之和
-  loveContent.style.height =
-    Math.max(loveHeart.offsetHeight, code.offsetHeight) + "px";
-  // 设置 love-content 的 margin-top 和 margin-left 计算上边距使内容垂直居中/水平居中 同时确保最小边距为10px
-  loveContent.style.marginTop =
-    Math.max((window.innerHeight - loveContent.offsetHeight) / 2, 10) + "px";
+    const loveContent = document.getElementById("love-content");
+    const code = document.getElementById("code");
+    if (!loveContent || !code) {
+      console.error("Element 'love-content' or 'code' not found");
+      return;
+    }
+    // 将 love-content 的宽度设置为 loveHeart 和 code 两个元素宽度之和
+    loveContent.style.width = loveHeart.offsetWidth + code.offsetWidth + "px";
+    // 将 love-content 的宽度设置为 loveHeart 和 code 两个元素宽度之和
+    loveContent.style.height =
+      Math.max(loveHeart.offsetHeight, code.offsetHeight) + "px";
+    // 设置 love-content 的 margin-top 和 margin-left 计算上边距使内容垂直居中/水平居中 同时确保最小边距为10px
+    loveContent.style.marginTop =
+      Math.max((window.innerHeight - loveContent.offsetHeight) / 2, 10) + "px";
 
-  // renderLoop
-  setInterval(function () {
-    garden.render();
-  }, Garden.options.growSpeed);
+    // renderLoop
+    setInterval(function () {
+      garden.render();
+    }, Garden.options.growSpeed);
+  } catch (error) {
+    console.error("An error occurred during window.onload:", error);
+  }
 };
 
 window.onresize = function () {
@@ -45,7 +64,7 @@ window.onresize = function () {
 
 function getHeartPoint(angle) {
   const t = angle / Math.PI;
-  const x = 19.5 * (16 * Math.pow(Math.sin(t), 3));
+  const x = 19.5 * (16 * Math.sin(t) ** 3);
   const y =
     -20 *
     (13 * Math.cos(t) -
@@ -81,7 +100,6 @@ function startHeartAnimation(fn) {
       showMessages(() => {
         fn && fn();
       });
-      
     } else {
       angle += 0.2;
     }
@@ -89,30 +107,32 @@ function startHeartAnimation(fn) {
 }
 
 function timeElapse(date) {
-   // 处理输入参数
-   let startDate;
-   if (date instanceof Date) {
-     startDate = date;
-   } else if (typeof date === 'string') {
-     // 处理日期字符串
-     startDate = new Date(date.replace(/\./g, '-'));
-   } else {
-     console.error('Invalid date parameter. Please use Date object or YYYY.MM.DD string format');
-     return;
-   }
- 
-   // 确保日期有效
-   if (isNaN(startDate.getTime())) {
-     console.error('Invalid date. Please check your input');
-     return;
-   }
+  // 处理输入参数
+  let startDate;
+  if (date instanceof Date) {
+    startDate = date;
+  } else if (typeof date === "string") {
+    // 处理日期字符串
+    startDate = new Date(date.replace(/\./g, "-"));
+  } else {
+    console.error(
+      "Invalid date parameter. Please use Date object or YYYY.MM.DD string format"
+    );
+    return;
+  }
+
+  // 确保日期有效
+  if (isNaN(startDate.getTime())) {
+    console.error("Invalid date. Please check your input");
+    return;
+  }
 
   // 获取当前时间
   const current = new Date();
-  
+
   // 计算时间差（毫秒）
   let timeDiff = current - startDate;
-  
+
   // 如果是未来日期，显示0
   if (timeDiff < 0) {
     timeDiff = 0;
@@ -120,19 +140,19 @@ function timeElapse(date) {
 
   // 转换为秒
   let seconds = Math.floor(timeDiff / 1000);
-  
+
   // 计算天数
   const days = Math.floor(seconds / (3600 * 24));
   seconds = seconds % (3600 * 24);
-  
+
   // 计算小时
   let hours = Math.floor(seconds / 3600);
   seconds = seconds % 3600;
-  
+
   // 计算分钟
   let minutes = Math.floor(seconds / 60);
   seconds = seconds % 60;
-  
+
   // 格式化显示（补零）
   hours = hours < 10 ? "0" + hours : hours;
   minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -143,7 +163,7 @@ function timeElapse(date) {
                  <span class="digit">${hours}</span> hours 
                  <span class="digit">${minutes}</span> minutes 
                  <span class="digit">${seconds}</span> seconds`;
-  
+
   // 更新显示
   const clockElement = document.getElementById("elapseClock");
   if (clockElement) {
@@ -179,7 +199,6 @@ function adjustWordsPosition() {
   words.style.top = garden.offsetTop + 195 + "px";
   words.style.left = garden.offsetLeft + 70 + "px";
 }
-
 
 function showLoveU(fn) {
   const loveU = document.getElementById("loveu");

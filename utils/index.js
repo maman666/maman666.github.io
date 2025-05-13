@@ -52,9 +52,12 @@ function typewriter(element, options = {}) {
     return progress + 1;
   }
 
+  let lastTime = 0;
   // 开始打字效果
-  function startTyping() {
-    const timer = setInterval(() => {
+  function startTyping(timestamp) {
+    if (!lastTime) lastTime = timestamp;
+    const elapsed = timestamp - lastTime;
+    if (elapsed >= config.speed) {
       progress = processNextChar();
 
       // 显示当前文本和光标
@@ -64,26 +67,26 @@ function typewriter(element, options = {}) {
         (config.cursorBlink && progress & 1 ? config.cursorChar : "");
 
       // 检查是否完成
-      if (progress >= originalText.length) {
-        clearInterval(timer);
+      if (progress < originalText.length) {
+        lastTime = timestamp;
+        requestAnimationFrame(startTyping);
+      } else {
         element.innerHTML = originalText;
-
         // 调用完成回调
         if (typeof config.onComplete === "function") {
           config.onComplete();
         }
       }
-    }, config.speed);
-
-    // 返回清理函数
-    return () => clearInterval(timer);
+    } else {
+      requestAnimationFrame(startTyping);
+    }
   }
 
   // 处理开始延迟
   if (config.startDelay > 0) {
-    setTimeout(startTyping, config.startDelay);
+    setTimeout(() => requestAnimationFrame(startTyping), config.startDelay);
   } else {
-    startTyping();
+    requestAnimationFrame(startTyping);
   }
 }
 
@@ -121,17 +124,16 @@ function elasticMove(element, options) {
     property: 'left',
     damping: 0.75,
     spring: 8,
-    interval: 30,
     onComplete: null,
     ...options
   };
 
-  console.log(config, config.target);
-
   // 速度变量
   let speed = 0;
-  // 定时器
-  let timer = null;
+  // 新增一个变量来记录循环次数
+  let loopCount = 0;
+  // 最大循环次数，可根据实际情况调整
+  const maxLoopCount = 80; 
 
   // 获取当前位置
   const getCurrentPosition = () => {
@@ -139,16 +141,7 @@ function elasticMove(element, options) {
     return parseInt(position) || 0;
   };
 
-  // 清除之前的定时器
-  clearInterval(timer);
-
-  // 新增一个变量来记录循环次数
-  let loopCount = 0;
-  // 最大循环次数，可根据实际情况调整
-  const maxLoopCount = 80; 
-  
-  // 开始运动
-  timer = setInterval(() => {
+  function animate() {
     const currentPosition = getCurrentPosition();
   
     // 计算速度
@@ -161,7 +154,6 @@ function elasticMove(element, options) {
   
     if (isNearTarget || isMaxLoopReached) {
       console.log('停止弹性运动');
-      clearInterval(timer);
       element.style[config.property] = `${config.target}px`;
       speed = 0;
       // 调用完成回调
@@ -170,24 +162,19 @@ function elasticMove(element, options) {
       }
     } else {
       element.style[config.property] = `${currentPosition + speed}px`;
+      loopCount++;
+      requestAnimationFrame(animate);
     }
-    loopCount++;
-  }, config.interval);
+  }
+
+  // 开始运动
+  requestAnimationFrame(animate);
 
   // 返回停止函数
-  return () => clearInterval(timer);
+  return () => cancelAnimationFrame(animate);
 }
 
-/**
- * 自由落体运动函数
- * @param {HTMLElement} element - 需要运动的DOM元素
- * @param {Object} options - 配置选项
- * @param {number} options.gravity - 重力加速度（默认3）
- * @param {number} options.bounce - 反弹系数（默认0.75）
- * @param {number} options.interval - 定时器间隔（默认30ms）
- * @param {Function} options.onBounce - 碰撞回调函数
- * @returns {Function} 返回停止动画的函数
- */
+// 自由落体运动
 function freeFall(element, options = {}) {
   if (!element) {
     throw new Error('Element is required');
@@ -197,18 +184,13 @@ function freeFall(element, options = {}) {
   const config = {
     gravity: 3, // 控制重力加速度
     bounce: 0.75, // 控制反弹系数
-    interval: 30, // 控制动画帧率
     onBounce: null,
     ...options
   };
 
   let speed = 0;
-  let timer = null;
 
-  // 清除之前的定时器
-  clearInterval(timer);
-
-  timer = setInterval(() => {
+  function animate() {
     // 添加重力加速度
     speed += config.gravity;
 
@@ -216,8 +198,6 @@ function freeFall(element, options = {}) {
     let newTop = element.offsetTop + speed;
     
     const maxTop = document.documentElement.clientHeight - element.offsetHeight;
-
-    console.log('newTop:',newTop, 'maxTop:', maxTop);
 
     // 检查是否触底
     if (newTop > maxTop) {
@@ -230,19 +210,21 @@ function freeFall(element, options = {}) {
         config.onBounce();
       }
 
-      console.log('速度：', Math.abs(speed));
       // 如果速度很小，就停止运动
       if (Math.abs(speed) < 2) {
         console.log('停止自由落体');
-        clearInterval(timer);
         return;
       }
     }
 
     // 更新位置
     element.style.top = `${newTop}px`;
-  }, config.interval);
+    requestAnimationFrame(animate);
+  }
+
+  // 开始动画
+  requestAnimationFrame(animate);
 
   // 返回停止函数
-  return () => clearInterval(timer);
+  return () => cancelAnimationFrame(animate);
 }
