@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>生日惊喜</title>
+  <style>
+    body {
+      background: #1a1a1a;
+      overflow: hidden;
+    }
+
+
+    /* 优化后的蛋糕容器 */
+    .cake-container {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: pointer;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(-20px);
+      }
+    }
+
+    /* 再次优化后的蛋糕样式，更大更立体 */
+    .cake {
+      width: 200px;
+      height: 180px;
+      background: #f5cba7;
+      border-radius: 20px;
+      position: relative;
+      box-shadow:
+        0 -15px 0 #e6b0aa,
+        0 -30px 0 #d7bde2,
+        5px 5px 15px rgba(0, 0, 0, 0.3);
+      /* 添加立体阴影 */
+      margin: 0 auto;
+      transform: perspective(800px) rotateX(15deg);
+      /* 添加透视效果 */
+      transform-origin: bottom;
+    }
+
+    /* 蛋糕上的奶油层 */
+    .cake::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: -15px;
+      width: 230px;
+      height: 40px;
+      background: #f9e79f;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
+      /* 立体阴影 */
+    }
+
+    /* 蛋糕上的樱桃 */
+    .cake::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 35px;
+      height: 35px;
+      background: #ff0000;
+      border-radius: 50%;
+      box-shadow:
+        inset -3px -3px 3px rgba(0, 0, 0, 0.2),
+        2px 2px 5px rgba(0, 0, 0, 0.2);
+      /* 立体阴影 */
+    }
+
+
+
+    /* 优化引线燃烧动画，使其更自然 */
+    @keyframes burn {
+      0% {
+        height: 120px;
+        opacity: 1;
+      }
+
+      100% {
+        height: 0;
+        opacity: 0;
+      }
+    }
+
+    /* 蛋糕侧面纹理 */
+    .cake .texture {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(-45deg,
+          rgba(255, 255, 255, 0.1),
+          rgba(255, 255, 255, 0.1) 5px,
+          transparent 5px,
+          transparent 10px);
+      border-radius: 15px;
+    }
+
+    /* 优化后的引线动画 */
+    .fuse {
+      width: 10px;
+      height: 100px;
+      background: linear-gradient(to bottom, #8b4513, #a0522d);
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      border-radius: 5px;
+    }
+
+    /* 引线燃烧效果 */
+    .fuse::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: #ffd700;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 5px rgba(255, 215, 0, 0.5);
+      animation: flicker 0.5s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: translateX(-50%) scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    /* 引线动画 */
+    .fuse {
+      width: 150px;
+      height: 3px;
+      background: linear-gradient(to right, #ffd700 90%, transparent);
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+
+    /* 优化后的许愿框样式，更具生日氛围 */
+    .wish-box {
+      position: fixed;
+      top: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle at center, #ffebf5 0%, #ff99cc 100%);
+      padding: 30px;
+      border-radius: 20px;
+      transition: top 2s ease-in-out;
+      box-shadow: 0 0 30px 10px rgba(255, 153, 204, 0.5), 0 0 10px 5px rgba(255, 255, 255, 0.8) inset;
+      animation: bounce 1s infinite alternate;
+      font-family: 'Comic Sans MS', cursive;
+    }
+
+    @keyframes bounce {
+      0% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      100% {
+        transform: translateX(-50%) translateY(-20px);
+      }
+    }
+
+    .wish-box textarea {
+      width: 300px;
+      height: 150px;
+      border: 2px solid #ff66b2;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 16px;
+      resize: none;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .wish-box button {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 30px;
+      background: #ff66b2;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .wish-box button:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotateY(0deg);
+      }
+
+      100% {
+        transform: rotateY(360deg);
+      }
+    }
+
+    @keyframes burn {
+      0% {
+        width: 0;
+        opacity: 1;
+      }
+
+      100% {
+        width: 150px;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 修改后的蛋糕容器 -->
+  <div class="cake-container" onclick="startCelebration()">
+    <div class="fuse" id="fuse"></div>
+    <div class="cake">
+      <div class="texture"></div>
+    </div>
+  </div>
+
+  <div class="wish-box" id="wishBox">
+    <textarea placeholder="许下你的愿望..." style="width:200px;height:100px;"></textarea>
+    <button onclick="launchFireworks()" style="display:block;margin:10px auto;">✨ 点燃愿望</button>
+  </div>
+
+  <canvas id="fireworks"></canvas>
+
+  <script>
+    // 烟花系统
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Firework {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height;
+        this.speed = 2 + Math.random() * 3;
+        this.radius = 1 + Math.random() * 2;
+        this.hue = Math.random() * 360;
+      }
+
+      update() {
+        this.y -= this.speed;
+        if (this.y < Math.random() * canvas.height / 2) {
+          this.explode();
+        }
+      }
+
+      explode() {
+        for (let i = 0; i < 50; i++) {
+          particles.push(new Particle(this.x, this.y, this.hue));
+        }
+      }
+
+      draw() {
+        ctx.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    class Particle {
+      constructor(x, y, hue) {
+        this.x = x;
+        this.y = y;
+        this.angle = Math.random() * Math.PI * 2;
+        this.speed = Math.random() * 5;
+        this.hue = hue;
+        this.alpha = 1;
+      }
+
+      update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.alpha -= 0.01;
+      }
+
+      draw() {
+        ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.alpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    let fireworks = [];
+    let particles = [];
+
+    function animate() {
+      ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      fireworks.forEach((fw, index) => {
+        fw.update();
+        fw.draw();
+        if (fw.y < 0) fireworks.splice(index, 1);
+      });
+
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(index, 1);
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    function startCelebration() {
+      const fuse = document.getElementById('fuse');
+      fuse.style.opacity = '1';
+      fuse.style.animation = 'burn 3s forwards';
+      setTimeout(() => {
+        document.getElementById('wishBox').style.top = '50%';
+      }, 3000);
+    }
+
+    function launchFireworks() {
+      document.getElementById('wishBox').style.top = '-100%';
+      setInterval(() => {
+        fireworks.push(new Firework());
+      }, 500);
+      animate();
+    }
+  </script>
+</body>
+
+</html>

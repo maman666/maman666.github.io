@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我们的故事回忆录</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --book-width: 800px;
+      --book-height: 520px;
+      --page-color: #fff9f9;
+      --page-back-color: #f5f0e4;
+      --book-color: #ffb6c1;
+      --text-color: #5a3e36;
+      --spine-width: 30px;
+      --page-border: 1px solid #e8d5d5;
+      --transition: 1.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+
+    body {
+      font-family: 'Ma Shan Zheng', cursive;
+      background: linear-gradient(135deg, #f0eef6 0%, #ffeaf2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      perspective: 1200px;
+      overflow: hidden;
+    }
+
+    /* 书本容器 - 立体感增强 */
+    .book-container {
+      width: var(--book-width);
+      height: var(--book-height);
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateY(5deg);
+      transition: transform 0.6s ease;
+      box-shadow: 0 30px 40px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+    }
+
+    .book-container:hover {
+      transform: rotateY(0deg);
+    }
+
+    /* 书本主体 - 增强层次 */
+    .book {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      perspective: 2200px;
+    }
+
+    /* 书本封面 - 华丽设计 */
+    .book-cover {
+      position: absolute;
+      width: calc(100% - var(--spine-width));
+      height: 100%;
+      background: #ffcad4;
+      background-image:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 30%),
+        linear-gradient(to bottom, #ffdde4, #ffcad4);
+      border-radius: 8px 10px 10px 8px;
+      box-shadow:
+        0 4px 40px rgba(0, 0, 0, 0.2),
+        8px 0 20px rgba(0, 0, 0, 0.1) inset;
+      transform-origin: left center;
+      transform: translateX(var(--spine-width));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      color: #7d3c64;
+      padding: 30px;
+      cursor: pointer;
+      overflow: hidden;
+      z-index: 40;
+    }
+
+    .book-cover::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 80%;
+      height: 120%;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+      transform: rotate(20deg);
+    }
+
+    .book-cover::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path d="M20,50 Q40,35 60,50 T100,50" fill="none" stroke="%237d3c64" stroke-width="0.3"/></svg>');
+    }
+
+    .book-cover h1 {
+      font-size: 52px;
+      margin-bottom: 10px;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+      z-index: 2;
+      position: relative;
+      transform: translateY(-10px);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .book-cover h2 {
+      font-size: 28px;
+      font-weight: normal;
+      margin-top: 20px;
+      z-index: 2;
+      position: relative;
+    }
+
+    /* 书本封面装饰 */
+    .cover-decoration {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+    }
+
+    .cover-decoration span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(125, 60, 100, 0.3);
+      display: block;
+      animation: pulse 2s infinite alternate;
+    }
+
+    .cover-decoration span:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .cover-decoration span:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    /* 书脊 - 更立体 */
+    .book-spine {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--spine-width);
+      height: 100%;
+      background: linear-gradient(to right, #d8a5a5 0%, #ffb6c1 40%, #d8a5a5 100%);
+      z-index: 35;
+      border-radius: 5px 0 0 5px;
+      box-shadow:
+        5px 0 20px rgba(0, 0, 0, 0.2),
+        -5px 0 15px rgba(0, 0, 0, 0.1) inset;
+    }
+
+    .spine-title {
+      position: absolute;
+      color: white;
+      width: var(--book-height);
+      font-size: 32px;
+      font-family: 'ZCOOL QingKe HuangYou', cursive;
+      transform: translate(-50%, -50%) rotate(90deg);
+      transform-origin: 0 0;
+      top: 50%;
+      left: calc(var(--spine-width) / 2);
+      text-shadow:
+        1px 1px 2px rgba(0, 0, 0, 0.4),
+        0 0 8px rgba(255, 255, 255, 0.3);
+      z-index: 36;
+      letter-spacing: 4px;
+    }
+
+    /* 页面样式 - 真实翻页效果 */
+    .page {
+      position: absolute;
+      width: calc(100% - var(--spine-width));
+      height: 100%;
+      background: var(--page-color);
+      padding: 35px;
+      box-sizing: border-box;
+      transform-origin: left center;
+      box-shadow:
+        0 2px 25px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.8) inset;
+      border-radius: 0 8px 8px 0;
+      overflow: hidden;
+      z-index: 20;
+      transition: var(--transition);
+      transform: translateX(var(--spine-width)) rotateY(0deg);
+      backface-visibility: hidden;
+    }
+
+    /* 页面正面内容 */
+    .page-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+      backface-visibility: hidden;
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+
+    /* 页面背面内容 */
+    .page-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 35px;
+      background: var(--page-back-color);
+      transform: rotateY(180deg);
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'ZCOOL QingKe HuangYou', cursive;
+      font-size: 22px;
+      color: rgba(90, 62, 54, 0.7);
+      box-shadow:
+        -2px 0 15px rgba(0, 0, 0, 0.05) inset;
+      background-image:
+        radial-gradient(#e8ddd8 1px, transparent 1px),
+        radial-gradient(#e8ddd8 1px, transparent 1px);
+      background-position: 0 0, 10px 10px;
+      background-size: 20px 20px;
+      text-align: center;
+    }
+
+    .page-back::before {
+      content: '"';
+      font-size: 120px;
+      opacity: 0.1;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .photo-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+      border-radius: 4px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+      transition: all 0.4s;
+    }
+
+    .photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s ease;
+      background: #f8f6f3;
+    }
+
+    .photo-container:hover .photo {
+      transform: scale(1.05);
+    }
+
+    .text {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 26px;
+      color: var(--text-color);
+      line-height: 1.7;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.08);
+      letter-spacing: 1px;
+      padding: 0 10px;
+    }
+
+    .date {
+      font-size: 18px;
+      color: var(--text-color);
+      text-align: right;
+      margin-top: 20px;
+      font-family: 'ZCOOL QingKe HuangYou', cursive;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
+    /* 控制按钮 - 华丽设计 */
+    .controls {
+      position: absolute;
+      bottom: -70px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      z-index: 100;
+    }
+
+    button {
+      position: relative;
+      background: linear-gradient(to bottom, #ffcad4, #ffb6c1);
+      color: #7d3c64;
+      border: none;
+      padding: 16px 40px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 22px;
+      font-family: 'Ma Shan Zheng', cursive;
+      transition: all 0.4s cubic-bezier(0.25, 0.4, 0.15, 0.9);
+      min-width: 160px;
+      overflow: hidden;
+      box-shadow:
+        0 6px 25px rgba(0, 0, 0, 0.18),
+        0 2px 4px rgba(0, 0, 0, 0.05);
+      z-index: 2;
+      letter-spacing: 2px;
+      transform-style: preserve-3d;
+    }
+
+    button:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      color: #fff;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), transparent);
+      z-index: -1;
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+      transform: skewX(-25deg);
+      transition: all 0.8s;
+      z-index: -1;
+    }
+
+    button:hover::after {
+      left: 150%;
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 书本阴影 - 更逼真 */
+    .book-shadow {
+      position: absolute;
+      width: calc(100% - 60px);
+      height: 30px;
+      bottom: -45px;
+      left: 30px;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 80%);
+      border-radius: 50%;
+      filter: blur(12px);
+      z-index: -1;
+      transform: rotateX(80deg);
+      opacity: 0.8;
+    }
+
+    /* 页面进度条 */
+    .progress {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 4px;
+      width: 50%;
+      background: rgba(125, 60, 100, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .progress-fill {
+      position: absolute;
+      height: 100%;
+      background: linear-gradient(to right, #ff8fa3, #ffb6c1);
+      transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      border-radius: 2px;
+    }
+
+    /* 动画关键帧 */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(-10px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-15px) rotate(2deg);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    @keyframes shadow-pulse {
+
+      0%,
+      100% {
+        transform: scale(0.95);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 900px) {
+      :root {
+        --book-width: 92vw;
+        --book-height: 78vh;
+        --spine-width: 22px;
+      }
+
+      .photo-container {
+        height: 240px;
+      }
+
+      .text {
+        font-size: 22px;
+      }
+
+      .spine-title {
+        font-size: 24px;
+      }
+
+      button {
+        padding: 14px 30px;
+        font-size: 18px;
+        min-width: 140px;
+      }
+
+      .book-cover h1 {
+        font-size: 36px;
+      }
+
+      .book-cover h2 {
+        font-size: 22px;
+      }
+
+      .progress {
+        width: 70%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="book-container">
+    <div class="book" id="book">
+      <!-- 书本封面 -->
+      <div class="book-cover" id="cover">
+        <h1>爱的纪念册</h1>
+        <h2>我们的美好时光珍藏</h2>
+        <div class="cover-decoration">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- 书脊 -->
+      <div class="book-spine">
+        <div class="spine-title">爱的轨迹</div>
+      </div>
+
+      <!-- 第一页 -->
+      <div class="page" id="page1" style="z-index: 5;">
+        <div class="page-content">
+          <div class="photo-container">
+            <img
+              src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=600&ixlib=rb-1.2.1"
+              class="photo">
+          </div>
+          <div class="text">第一次见面时的紧张与期待，你的微笑让我心安</div>
+          <div class="date">2023年3月14日</div>
+        </div>
+        <div class="page-back">
+          "生命中美好的事情总是悄然发生"
+        </div>
+      </div>
+
+      <!-- 第二页 -->
+      <div class="page" id="page2" style="z-index: 4;">
+        <div class="page-content">
+          <div class="photo-container">
+            <img
+              src="https://images.unsplash.com/photo-1578632767115-351597cf2477?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=600&ixlib=rb-1.2.1"
+              class="photo">
+          </div>
+          <div class="text">第一次旅行，海边的日落比想象中更美</div>
+          <div class="date">2023年5月20日</div>
+        </div>
+        <div class="page-back">
+          "和你在一起的每个瞬间都值得珍藏"
+        </div>
+      </div>
+
+      <!-- 第三页 -->
+      <div class="page" id="page3" style="z-index: 3;">
+        <div class="page-content">
+          <div class="photo-container">
+            <img
+              src="https://images.unsplash.com/photo-1519699047748-3cc2c3e1a37e?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=600&ixlib=rb-1.2.1"
+              class="photo">
+          </div>
+          <div class="text">你为我准备的生日惊喜，是我最难忘的时刻</div>
+          <div class="date">2023年9月10日</div>
+        </div>
+        <div class="page-back">
+          "真正的惊喜不是烛光晚餐，而是你的用心"
+        </div>
+      </div>
+
+      <!-- 第四页 -->
+      <div class="page" id="page4" style="z-index: 2;">
+        <div class="page-content">
+          <div class="photo-container">
+            <img
+              src="https://images.unsplash.com/photo-1609369267180-3510f4abab0d?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=600&ixlib=rb-1.2.1"
+              class="photo">
+          </div>
+          <div class="text">纪念日那天，你偷偷准备的玫瑰与誓言</div>
+          <div class="date">2024年5月20日</div>
+        </div>
+        <div class="page-back">
+          "最好的爱情是平凡日子里的点点滴滴"
+        </div>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- 书本阴影 -->
+    <div class="book-shadow" id="bookShadow"></div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+      <button id="prevBtn" disabled>上一页</button>
+      <button id="nextBtn">下一页</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const book = document.getElementById('book');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const pages = document.querySelectorAll('.page');
+      const cover = document.getElementById('cover');
+      const progressFill = document.getElementById('progressFill');
+      const bookShadow = document.getElementById('bookShadow');
+
+      let currentPage = -1; // 初始状态为封面页
+      const totalPages = pages.length;
+      let isAnimating = false;
+
+      // 更新UI状态
+      function updateUI() {
+        // 按钮状态
+        prevBtn.disabled = currentPage === -1 || isAnimating;
+        nextBtn.disabled = currentPage === totalPages - 1 || isAnimating;
+
+        // 封面状态
+        cover.style.display = currentPage === -1 ? 'flex' : 'none';
+        cover.style.zIndex = totalPages + 5;
+
+        // 页面层级 - 修复闪烁问题的关键
+        pages.forEach((page, index) => {
+          if (index === currentPage) {
+            page.style.zIndex = totalPages - currentPage + 2;
+          } else if (index < currentPage) {
+            page.style.zIndex = index + 1;
+          } else {
+            page.style.zIndex = totalPages - index;
+          }
+        });
+
+        // 进度条
+        const progressPercentage = ((currentPage + 1) / totalPages) * 100;
+        progressFill.style.width = `${progressPercentage}%`;
+
+        // 书本阴影动画
+        bookShadow.style.animation = 'none';
+        setTimeout(() => {
+          bookShadow.style.animation = 'shadow-pulse 4s infinite alternate';
+        }, 10);
+      }
+
+      // 丝滑翻页动画 - 修复闪烁问题
+      function flipPage(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        // 特殊处理：从封面翻到第一页
+        if (currentPage === -1 && direction === 'next') {
+          // 封面动画：翻过去并隐藏
+          cover.animate(
+            [
+              { transform: 'translateX(var(--spine-width)) rotateY(0deg)', opacity: 1 },
+              { transform: 'translateX(var(--spine-width)) rotateY(-180deg)', opacity: 0 }
+            ],
+            {
+              duration: 1200,
+              easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+            }
+          ).onfinish = () => {
+            cover.style.display = 'none';
+
+            // 第一页动画：从背面翻到正面
+            const firstPage = pages[0];
+            firstPage.style.zIndex = totalPages + 1;
+            firstPage.style.transform = 'translateX(var(--spine-width)) rotateY(-180deg)';
+
+            firstPage.animate(
+              [
+                { transform: 'translateX(var(--spine-width)) rotateY(-180deg)' },
+                { transform: 'translateX(var(--spine-width)) rotateY(0deg)' }
+              ],
+              {
+                duration: 1200,
+                easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+              }
+            ).onfinish = () => {
+              firstPage.style.transform = 'translateX(var(--spine-width)) rotateY(0deg)';
+              currentPage = 0; // 设置当前页为第一页
+              isAnimating = false;
+              updateUI();
+            };
+          };
+
+          return;
+        }
+
+        // 特殊处理：从第一页翻回封面
+        if (currentPage === 0 && direction === 'prev') {
+          // 第一页翻回背面
+          const firstPage = pages[0];
+          firstPage.style.zIndex = totalPages + 1;
+
+          firstPage.animate(
+            [
+              { transform: 'translateX(var(--spine-width)) rotateY(0deg)' },
+              { transform: 'translateX(var(--spine-width)) rotateY(-180deg)' }
+            ],
+            { duration: 1200, easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)' }
+          ).onfinish = () => {
+            firstPage.style.transform = 'translateX(var(--spine-width)) rotateY(-180deg)';
+
+            // 封面翻回正面
+            cover.style.display = 'flex';
+            cover.animate(
+              [
+                { transform: 'translateX(var(--spine-width)) rotateY(-180deg)', opacity: 0 },
+                { transform: 'translateX(var(--spine-width)) rotateY(0deg)', opacity: 1 }
+              ],
+              { duration: 1200, easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)' }
+            ).onfinish = () => {
+              cover.style.transform = 'translateX(var(--spine-width)) rotateY(0deg)';
+              currentPage = -1; // 设置当前页为封面
+              isAnimating = false;
+              updateUI();
+            };
+          };
+
+          return;
+        }
+
+        // 常规翻页逻辑
+        const current = pages[currentPage];
+
+        if (direction === 'next' && currentPage < totalPages - 1) {
+          // 翻到下一页
+          const next = pages[currentPage + 1];
+
+          // 准备动画
+          next.style.zIndex = totalPages + 1;
+          next.style.transform = `translateX(var(--spine-width)) rotateY(-180deg)`;
+
+          // 创建翻页动画
+          const currentPageAnimation = current.animate(
+            [
+              { transform: 'translateX(var(--spine-width)) rotateY(0deg)' },
+              { transform: 'translateX(var(--spine-width)) rotateY(-180deg)' }
+            ],
+            {
+              duration: 1200,
+              easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+            }
+          );
+
+          const nextPageAnimation = next.animate(
+            [
+              { transform: 'translateX(var(--spine-width)) rotateY(-180deg)' },
+              { transform: 'translateX(var(--spine-width)) rotateY(0deg)' }
+            ],
+            {
+              duration: 1200,
+              easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+            }
+          );
+
+          // 动画结束处理
+          currentPageAnimation.onfinish = () => {
+            current.style.transform = 'translateX(var(--spine-width)) rotateY(-180deg)';
+          };
+
+          nextPageAnimation.onfinish = () => {
+            next.style.transform = 'translateX(var(--spine-width)) rotateY(0deg)';
+            currentPage++;
+            isAnimating = false;
+            updateUI();
+          };
+
+        } else if (direction === 'prev' && currentPage > 0) {
+          // 翻回上一页
+          const prev = pages[currentPage - 1];
+
+          // 准备动画
+          prev.style.zIndex = totalPages + 1;
+          prev.style.transform = 'translateX(var(--spine-width)) rotateY(0deg)';
+
+          // 创建翻回动画
+          const prevPageAnimation = prev.animate(
+            [
+              { transform: 'translateX(var(--spine-width)) rotateY(-180deg)' },
+              { transform: 'translateX(var(--spine-width)) rotateY(0deg)' }
+            ],
+            {
+              duration: 1200,
+              easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+            }
+          );
+
+          const currentPageAnimation = pages[currentPage].animate(
+            [
+              { transform: 'translateX(var(--spine-width)) rotateY(0deg)' },
+              { transform: 'translateX(var(--spine-width)) rotateY(-180deg)' }
+            ],
+            {
+              duration: 1200,
+              easing: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+            }
+          );
+
+          // 动画结束处理
+          prevPageAnimation.onfinish = () => {
+            prev.style.transform = 'translateX(var(--spine-width)) rotateY(0deg)';
+          };
+
+          currentPageAnimation.onfinish = () => {
+            pages[currentPage].style.transform = 'translateX(var(--spine-width)) rotateY(-180deg)';
+            currentPage--;
+            isAnimating = false;
+            updateUI();
+          };
+        } else {
+          isAnimating = false;
+        }
+      }
+
+      // 按钮事件监听 - 添加防抖处理
+      nextBtn.addEventListener('click', () => {
+        if (!isAnimating) flipPage('next');
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (!isAnimating) flipPage('prev');
+      });
+
+      // 封面点击翻到第一页
+      cover.addEventListener('click', () => {
+        if (!isAnimating && currentPage === -1) {
+          flipPage('next');
+        }
+      });
+
+      // 键盘翻页控制 - 添加防抖处理
+      document.addEventListener('keydown', (e) => {
+        if (isAnimating) return;
+
+        if (e.key === 'ArrowRight') flipPage('next');
+        else if (e.key === 'ArrowLeft') flipPage('prev');
+      });
+
+      // 页面点击翻页（上1/3区域）
+      pages.forEach(page => {
+        page.addEventListener('click', (e) => {
+          if (isAnimating) return;
+
+          const rect = page.getBoundingClientRect();
+          if (e.clientY < rect.top + rect.height / 3) {
+            flipPage('prev');
+          } else {
+            flipPage('next');
+          }
+        });
+      });
+
+      // 初始状态设置
+      updateUI();
+      bookShadow.style.animation = 'shadow-pulse 4s infinite alternate';
+    });
+  </script>
+</body>
+
+</html>
