@@ -45,6 +45,11 @@ iframe[src*="footer"] {
   /* 底部的高度 */
 }
 
+iframe[src*="vueLuckDraw"] {
+  height: 100vh;
+  /* 底部的高度 */
+}
+
 /* 针对移动设备的响应式调整 */
 /* 响应式布局断点 */
 /* 大屏幕设备 (>=1200px) */

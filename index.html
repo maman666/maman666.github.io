@@ -1,23 +1,75 @@
-<!doctype html>
-<html lang="">
+<!DOCTYPE html>
+<html lang="zh-CN">
 
-<!-- <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <title>Lin-Man-666</title>
-  <script defer="defer" src="./dist/js/chunk-vendors.c88e0f2a.js"></script>
-  <script defer="defer" src="./dist/js/app.9da60d46.js"></script>
-  <link href="./dist/css/app.2136ba04.css" rel="stylesheet">
+<head>
+  <meta charset="UTF-8">
+  <title>祝琳的快乐星球🌠</title>
+  <link rel="stylesheet" href="./static/css/reset.css" />
+  <link rel="stylesheet" href="./index.css" />
+  <!-- 引入 Vue 2 的 CDN 链接 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 
-<body><noscript><strong>We're sorry but Lin-Man doesn't work properly without JavaScript enabled. Please enable it to
-      continue.</strong></noscript>
-  <div id="app"></div>
-</body> -->
+<body>
+  <div id="app">
+    <!-- 头部-->
+    <!-- <iframe src="./components/headerNav/headerNav.html" scrolling="no"></iframe> -->
+
+    <!-- 爱心动画 -->
+    <!-- <iframe v-if="isLoveShow" src="./page/love/love.html" scrolling="no"></iframe> -->
+
+    <!-- 生活日常 -->
+    <!-- <iframe src="./page/life/life.html" scrolling="no"></iframe> -->
+
+    <!-- 底部 -->
+    <!-- <iframe v-if="isFooterShow" src="./components/footer/footer.html" scrolling="no"></iframe> -->
+
+    <!-- 测试 -->
+    <iframe src="./page/vueLuckDraw/index.html" scrolling="no"></iframe>
+
+  </div>
+
+
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        headerIframe: null,
+        loveIframe: null,
+        lifeIframe: null,
+        isLoveShow: false,
+        isLifeShow: false,
+        isFooterShow: false,
+      },
+      methods: {
+
+      },
+      created() {
+        // 在父页面接收消息
+        window.addEventListener('message', event => {
+          console.log('收到子页面消息---：', event.data);
+          if (event.data.type === 'headerNav') {
+            this.isLoveShow = true;
+          }
+          if (event.data.type === 'love') {
+            this.isFooterShow = true;
+          }
+        });
+      },
+      mounted() {
+        // 在父页面（index.html）中发送消息 通过 src 属性选择特定的 iframe
+        this.headerIframe = document.querySelector('iframe[src*="headerNav"]');
+        this.loveIframe = document.querySelector('iframe[src*="love"]');
+        this.lifeIframe = document.querySelector('iframe[src*="life"]');
+
+        // 向不同的 iframe 发送消息
+        // headerIframe.contentWindow.postMessage({ type: 'header', message: 'Hello header!' }, '*');
+        // loveIframe.contentWindow.postMessage({ type: 'love', message: 'Hello love!' }, '*');
+        // lifeIframe.contentWindow.postMessage({ type: 'life', message: 'Hello life!' }, '*');
+      }
+    });
+  </script>
+</body>
 
 </html>
